@@ -53,8 +53,8 @@ int64_t CAFF::readLength(std::ifstream &file) {
 }
 
 std::vector<char> CAFF::readData(std::ifstream &file, const int64_t length) {
-    auto data = std::vector<char>(length);
-    file.read(reinterpret_cast<char *>(data.data()), length);
+    auto data = std::vector<char>((unsigned long) length);
+    file.read(data.data(), length);
     return data;
 }
 

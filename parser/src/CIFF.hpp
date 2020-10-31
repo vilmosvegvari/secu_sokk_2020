@@ -7,8 +7,8 @@
 
 class CIFF {
 public:
-    int width = -1;
-    int height = -1;
+    long width = -1;
+    long height = -1;
     std::string caption;
     std::vector<std::string> tags;
     std::vector<unsigned char> pixels;
