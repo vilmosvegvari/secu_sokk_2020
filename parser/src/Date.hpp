@@ -1,7 +1,3 @@
-//
-// Created by gracz on 2020. 10. 31..
-//
-
 #ifndef PARSER_DATE_HPP
 #define PARSER_DATE_HPP
 

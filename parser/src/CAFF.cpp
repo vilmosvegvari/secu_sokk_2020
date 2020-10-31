@@ -97,8 +97,12 @@ void CAFF::parseCredits(std::vector<char> &data) {
 }
 
 void CAFF::parseAnimation(std::vector<char> &data) {
+    // Duration
     auto duration = convertVectorToInt(data, 0);
+
+    // Parse CIFF
     CIFF ciff;
-    ciff.parseCiff(data);
+    auto ciff_data = std::vector(data.begin() + EIGHT_BYTE_L, data.end());
+    ciff.parseCiff(ciff_data);
     ciff_list.emplace_back(duration, ciff);
 }

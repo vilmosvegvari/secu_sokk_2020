@@ -18,7 +18,7 @@ public:
 
 private:
     const std::string path;
-    int64_t num_anim;
+    int64_t num_anim = -1;
     std::vector<std::tuple<int64_t, CIFF>> ciff_list;
     Date date;
     std::string creator;

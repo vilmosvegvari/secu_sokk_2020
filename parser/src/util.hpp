@@ -19,5 +19,4 @@ T convertVectorToInt(std::vector<char> data, int start_index) {
     return *reinterpret_cast<T *>(header_size_vec.data());
 }
 
-
 #endif //PARSER_UTIL_HPP
