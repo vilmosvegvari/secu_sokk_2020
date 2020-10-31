@@ -4,9 +4,24 @@
 
 #include <string>
 #include <vector>
+#include <tuple>
+#include "CIFF.hpp"
+#include "Date.hpp"
 
 class CAFF {
+public:
+    explicit CAFF(std::string path);
+
+    void parseCaff();
+
+    std::string getFileName();
+
+private:
     const std::string path;
+    int64_t num_anim;
+    std::vector<std::tuple<int64_t, CIFF>> ciff_list;
+    Date date;
+    std::string creator;
 
     enum FrameID : unsigned char {
         HEADER = 1,
@@ -22,20 +37,11 @@ class CAFF {
 
     static std::vector<char> readData(std::ifstream &file, int64_t length);
 
-public:
+    void parseHeader(std::vector<char> &data);
 
-    explicit CAFF(std::string path);
+    void parseCredits(std::vector<char> &data);
 
-    void parseCaff();
-
-    std::string getFileName();
-
-    void parseHeader(std::vector<char> data);
-
-    void parseCredits(std::vector<char> data);
-
-    void parseAnimation(std::vector<char> data);
+    void parseAnimation(std::vector<char> &data);
 };
-
 
 #endif //PARSER_CAFF_HPP

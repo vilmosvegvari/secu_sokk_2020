@@ -68,7 +68,7 @@ creator of the CAFF file.
 		M - month (1 byte)
 		D - day (1 byte)
 		h - hour (1 byte)
-		m - minute (1 byte2
+		m - minute (1 byte)
 		
 	- Length of creator: 8-byte-long integer, the length of the field 
 	specifying the creator.
