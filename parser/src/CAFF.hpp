@@ -16,6 +16,8 @@ public:
 
     std::string getFileName();
 
+    void generateFiles();
+
 private:
     const std::string path;
     int64_t num_anim = -1;
@@ -42,6 +44,10 @@ private:
     void parseCredits(std::vector<char> &data);
 
     void parseAnimation(std::vector<char> &data);
+
+    void generateTxt();
+
+    void generateImage();
 };
 
 #endif //PARSER_CAFF_HPP

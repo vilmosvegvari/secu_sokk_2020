@@ -1,6 +1,8 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <Magick++.h>
+
 #include "CAFF.hpp"
 #include "util.hpp"
 
@@ -105,4 +107,39 @@ void CAFF::parseAnimation(std::vector<char> &data) {
     auto ciff_data = std::vector(data.begin() + EIGHT_BYTE_L, data.end());
     ciff.parseCiff(ciff_data);
     ciff_list.emplace_back(duration, ciff);
+}
+
+void CAFF::generateFiles() {
+    generateImage();
+    generateTxt();
+}
+
+void CAFF::generateTxt() {
+    std::ofstream txt(getFileName() + ".txt");
+    if (txt.is_open()) {
+        txt << "Creator: " << creator << std::endl;
+        txt << "Date: " << date.year << "." << date.month << "." << date.day << " "
+            << date.hour << ":" << date.minute << std::endl;
+        txt << "CIFFs: " << ciff_list.size() << std::endl;
+        for (int i = 0; i < ciff_list.size(); ++i) {
+            txt << "CIFF #" << i + 1 << ":" << std::endl;
+            txt << "\tCaption: " << std::get<1>(ciff_list.at(i)).caption << std::endl;
+            txt << "\tTags: ";
+            for (auto &tag: std::get<1>(ciff_list.at(i)).tags) {
+                txt << tag << "; ";
+            }
+            txt << std::endl;
+            txt << "\tDuration: " << std::get<0>(ciff_list.at(i)) << std::endl;
+            txt << "\tSize (w x h) : " << std::get<1>(ciff_list.at(i)).width << "x";
+            txt << std::get<1>(ciff_list.at(i)).height << std::endl;
+        }
+    }
+}
+
+void CAFF::generateImage() {
+    for (int i = 0; i < ciff_list.size(); ++i) {
+        auto ciff = std::get<1>(ciff_list.at(i));
+        Magick::Image image(ciff.width, ciff.height, "RGB", MagickCore::CharPixel, ciff.pixels.data());
+        image.write("test_"+ std::to_string(i) +".png");
+    }
 }
