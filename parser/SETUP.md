@@ -18,9 +18,9 @@ This guide shows how to set up the project using **Cygwin** on Windows.
     
     Then finish the installation.
 4. Add Cygwin to Clion Toolchains with the following settings:<br />
-![Toolchain settings](/doc/img/clion_toolchain_settings.png)
+![Toolchain settings](/parser/doc/img/clion_toolchain_settings.png)
 5. Create new CMake profile with the currently added toolchain:<br />
-![Cmake profile](/doc/img/clion_cmake_profile.png)
+![Cmake profile](/parser/doc/img/clion_cmake_profile.png)
 6. Reload CMake project
 7. Run with the new profile:<br />
-![Run](/doc/img/clion_run.png)
+![Run](/parser/doc/img/clion_run.png)
