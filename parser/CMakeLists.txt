@@ -3,7 +3,7 @@ project(parser)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
+find_package(ImageMagick COMPONENTS Magick++ MagickCore REQUIRED)
 include_directories(${ImageMagick_Magick++_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME}

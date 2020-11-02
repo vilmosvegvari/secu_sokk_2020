@@ -137,9 +137,12 @@ void CAFF::generateTxt() {
 }
 
 void CAFF::generateImage() {
-    for (int i = 0; i < ciff_list.size(); ++i) {
-        auto ciff = std::get<1>(ciff_list.at(i));
+    std::vector<Magick::Image> frames;
+    for (auto & i : ciff_list) {
+        auto ciff = std::get<1>(i);
         Magick::Image image(ciff.width, ciff.height, "RGB", MagickCore::CharPixel, ciff.pixels.data());
-        image.write("test_"+ std::to_string(i) +".png");
+        image.animationDelay(std::get<0>(i)/10);
+        frames.emplace_back(image);
     }
+    Magick::writeImages(frames.begin(), frames.end(), getFileName() + ".gif");
 }
