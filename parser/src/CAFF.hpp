@@ -1,25 +1,28 @@
 #ifndef PARSER_CAFF_HPP
 #define PARSER_CAFF_HPP
 
-
 #include <string>
+#include <unistd.h>
 #include <vector>
 #include <tuple>
 #include "CIFF.hpp"
 #include "Date.hpp"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 class CAFF {
 public:
-    explicit CAFF(std::string path);
+    CAFF(const std::string &path, const std::string &outputPath);
 
     void parseCaff();
-
-    std::string getFileName();
 
     void generateFiles();
 
 private:
-    const std::string path;
+    const fs::path file_path;
+    fs::path output_path;
+
     int64_t num_anim = -1;
     std::vector<std::tuple<int64_t, CIFF>> ciff_list;
     Date date;
@@ -48,6 +51,8 @@ private:
     void generateTxt();
 
     void generateImage();
+
+    void verifyOutputPath();
 };
 
 #endif //PARSER_CAFF_HPP

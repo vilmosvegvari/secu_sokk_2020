@@ -6,13 +6,18 @@
 #include "CAFF.hpp"
 #include "util.hpp"
 
-namespace fs = std::filesystem;
-
-CAFF::CAFF(std::string path) : path(std::move(path)) {
+CAFF::CAFF(const std::string& path, const std::string& outputPath) :
+        file_path(path) {
+    if (outputPath.empty()) {
+        output_path = fs::current_path() / "out";
+    } else {
+        output_path = outputPath;
+    }
 }
 
+
 void CAFF::parseCaff() {
-    std::ifstream caffFile(this->path, std::ios::binary);
+    std::ifstream caffFile(this->file_path, std::ios::binary);
     //TODO check if first frame Header & only one header
     if (caffFile.is_open()) {
         while (caffFile.peek() != EOF) {
@@ -21,10 +26,6 @@ void CAFF::parseCaff() {
     }
     //TODO validate
     caffFile.close();
-}
-
-std::string CAFF::getFileName() {
-    return fs::path(this->path).stem();
 }
 
 void CAFF::readFrame(std::ifstream &file) {
@@ -110,12 +111,13 @@ void CAFF::parseAnimation(std::vector<char> &data) {
 }
 
 void CAFF::generateFiles() {
+    verifyOutputPath();
     generateImage();
     generateTxt();
 }
 
 void CAFF::generateTxt() {
-    std::ofstream txt(getFileName() + ".txt");
+    std::ofstream txt(output_path / file_path.filename().replace_extension(".txt"));
     if (txt.is_open()) {
         txt << "Creator: " << creator << std::endl;
         txt << "Date: " << date.year << "." << date.month << "." << date.day << " "
@@ -138,11 +140,18 @@ void CAFF::generateTxt() {
 
 void CAFF::generateImage() {
     std::vector<Magick::Image> frames;
-    for (auto & i : ciff_list) {
+    for (auto &i : ciff_list) {
         auto ciff = std::get<1>(i);
         Magick::Image image(ciff.width, ciff.height, "RGB", MagickCore::CharPixel, ciff.pixels.data());
-        image.animationDelay(std::get<0>(i)/10);
+        image.animationDelay(std::get<0>(i) / 10);
         frames.emplace_back(image);
     }
-    Magick::writeImages(frames.begin(), frames.end(), getFileName() + ".gif");
+    Magick::writeImages(frames.begin(), frames.end(),
+                        output_path / file_path.filename().replace_extension(".gif"));
+}
+
+void CAFF::verifyOutputPath() {
+    if (!fs::exists(output_path)) {
+        fs::create_directories(output_path);
+    }
 }

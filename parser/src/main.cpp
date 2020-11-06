@@ -1,15 +1,33 @@
 #include <iostream>
+#include <string>
+#include <unistd.h>
 
 #include "CAFF.hpp"
 
 int main(int argc, char *argv[]) {
-    if (argc > 1) {
-        CAFF caff(argv[1]);
+    std::string caff_file_path, output_path;
+
+    int c;
+    while ((c = getopt(argc, argv, "f:o:")) != -1) {
+        switch (c) {
+            case 'f':
+                caff_file_path = optarg;
+                continue;
+            case 'o':
+                output_path = optarg;
+                continue;
+            default:
+                std::cerr << "Unknown parameter" << c;
+                return -1;
+        }
+    }
+
+    try {
+        CAFF caff(caff_file_path, output_path);
         caff.parseCaff();
         caff.generateFiles();
-    } else {
-        std::cerr << "No filepath in arguments!" << std::endl;
-        return -1;
+    } catch (...) {
+        // TODO
     }
     return 0;
 }
