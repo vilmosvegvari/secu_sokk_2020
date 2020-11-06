@@ -1,12 +1,16 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+
+#include <nlohmann/json.hpp>
 #include <Magick++.h>
 
 #include "CAFF.hpp"
 #include "util.hpp"
 
-CAFF::CAFF(const std::string& path, const std::string& outputPath) :
+using json = nlohmann::json;
+
+CAFF::CAFF(const std::string &path, const std::string &outputPath) :
         file_path(path) {
     if (outputPath.empty()) {
         output_path = fs::current_path() / "out";
@@ -113,29 +117,29 @@ void CAFF::parseAnimation(std::vector<char> &data) {
 void CAFF::generateFiles() {
     verifyOutputPath();
     generateImage();
-    generateTxt();
+    generateJson();
 }
 
-void CAFF::generateTxt() {
-    std::ofstream txt(output_path / file_path.filename().replace_extension(".txt"));
-    if (txt.is_open()) {
-        txt << "Creator: " << creator << std::endl;
-        txt << "Date: " << date.year << "." << date.month << "." << date.day << " "
-            << date.hour << ":" << date.minute << std::endl;
-        txt << "CIFFs: " << ciff_list.size() << std::endl;
-        for (int i = 0; i < ciff_list.size(); ++i) {
-            txt << "CIFF #" << i + 1 << ":" << std::endl;
-            txt << "\tCaption: " << std::get<1>(ciff_list.at(i)).caption << std::endl;
-            txt << "\tTags: ";
-            for (auto &tag: std::get<1>(ciff_list.at(i)).tags) {
-                txt << tag << "; ";
-            }
-            txt << std::endl;
-            txt << "\tDuration: " << std::get<0>(ciff_list.at(i)) << std::endl;
-            txt << "\tSize (w x h) : " << std::get<1>(ciff_list.at(i)).width << "x";
-            txt << std::get<1>(ciff_list.at(i)).height << std::endl;
-        }
+void CAFF::generateJson() {
+    json j = {{"creator", creator},
+              {"date",    {{"year", date.year},
+                                  {"month", date.month},
+                                  {"day", date.day},
+                                  {"hour", date.hour},
+                                  {"minute", date.minute}}},
+    };
+    j["ciff_s"] = json::array();
+    for (auto &ciff : ciff_list) {
+        auto ciff_j = std::get<1>(ciff).generateJson();
+        ciff_j["duration"] = std::get<0>(ciff);
+        j["ciff_s"].push_back(ciff_j);
     }
+
+    std::ofstream json_file(output_path / file_path.filename().replace_extension(".json"));
+    if (json_file.is_open()) {
+        json_file << j.dump(4);
+    }
+    json_file.close();
 }
 
 void CAFF::generateImage() {

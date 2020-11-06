@@ -48,7 +48,7 @@ private:
 
     void parseAnimation(std::vector<char> &data);
 
-    void generateTxt();
+    void generateJson();
 
     void generateImage();
 

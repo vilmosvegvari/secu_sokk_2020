@@ -1,9 +1,12 @@
 #ifndef PARSER_CIFF_HPP
 #define PARSER_CIFF_HPP
 
-
 #include <vector>
 #include <string>
+
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 class CIFF {
 public:
@@ -14,6 +17,8 @@ public:
     std::vector<unsigned char> pixels;
 
     void parseCiff(std::vector<char> &data);
+
+    json generateJson();
 
 private:
     std::vector<char> parseHeader(std::vector<char> &data);

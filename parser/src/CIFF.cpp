@@ -57,3 +57,12 @@ void CIFF::parseTags(std::vector<char> &data, std::vector<char>::iterator startI
         tags.emplace_back(buffer);
     }
 }
+
+json CIFF::generateJson() {
+    json j = {
+            {"caption", caption},
+            {"size",    {{"width", width}, {"height", height}}},
+            {"tags", tags}
+    };
+    return j;
+}
