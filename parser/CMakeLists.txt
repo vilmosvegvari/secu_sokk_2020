@@ -3,7 +3,7 @@ project(parser)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(src)
+enable_testing()
 
 add_subdirectory(src)
-add_subdirectory(test EXCLUDE_FROM_ALL)
+add_subdirectory(test)

@@ -30,19 +30,21 @@ FetchContent_Declare(json
         GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
         GIT_TAG v3.9.1)
 
-FetchContent_GetProperties(json)
+FetchContent_MakeAvailable(json)
 if (NOT json_POPULATED)
     FetchContent_Populate(json)
     add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif ()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${ImageMagick_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
-
-add_library(${PROJECT_NAME}_lib STATIC
+add_library(${PROJECT_NAME}_lib  STATIC
         ${SOURCE_FILES}
         ${HEADER_FILES}
         )
 
-target_include_directories(${PROJECT_NAME}_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${ImageMagick_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json::nlohmann_json)
 
+target_link_libraries(${PROJECT_NAME}_lib PRIVATE ${ImageMagick_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_lib PUBLIC nlohmann_json::nlohmann_json)
+
+target_include_directories(${PROJECT_NAME}_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

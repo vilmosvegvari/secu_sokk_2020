@@ -2,13 +2,11 @@
 #include <filesystem>
 #include <fstream>
 
-#include <nlohmann/json.hpp>
-#include <Magick++.h>
-
 #include "CAFF.hpp"
 #include "util.hpp"
 
-using json = nlohmann::json;
+#include <Magick++.h>
+
 
 CAFF::CAFF(const std::string &path, const std::string &outputPath) :
         file_path(path) {

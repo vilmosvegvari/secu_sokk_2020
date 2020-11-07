@@ -9,6 +9,10 @@
 #include "Date.hpp"
 #include <filesystem>
 
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
 namespace fs = std::filesystem;
 
 class CAFF {
