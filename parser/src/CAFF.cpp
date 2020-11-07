@@ -1,22 +1,17 @@
 #include <iostream>
 #include <filesystem>
-#include <fstream>
 
 #include "CAFF.hpp"
-#include "util.hpp"
 
 #include <Magick++.h>
 
-
-CAFF::CAFF(const std::string &path, const std::string &outputPath) :
-        file_path(path) {
+CAFF::CAFF(const std::string &path, const std::string &outputPath) : file_path(path) {
     if (outputPath.empty()) {
         output_path = fs::current_path() / "out";
     } else {
         output_path = outputPath;
     }
 }
-
 
 void CAFF::parseCaff() {
     std::ifstream caffFile(this->file_path, std::ios::binary);
@@ -32,17 +27,16 @@ void CAFF::parseCaff() {
 
 void CAFF::readFrame(std::ifstream &file) {
     const auto frameId = readFrameID(file);
-    const int64_t length = readLength(file);
-    auto data = readData(file, length);
+    const int64_t length = readInt(file);
     switch (frameId) {
         case HEADER:
-            parseHeader(data);
+            parseHeader(file, length);
             break;
         case CREDITS:
-            parseCredits(data);
+            parseCredits(file, length);
             break;
         case ANIMATION:
-            parseAnimation(data);
+            parseAnimation(file, length);
             break;
     }
 }
@@ -51,64 +45,50 @@ CAFF::FrameID CAFF::readFrameID(std::ifstream &file) {
     return FrameID(file.get());
 }
 
-int64_t CAFF::readLength(std::ifstream &file) {
-    int64_t number;
-    file.read(reinterpret_cast<char *>(&number), EIGHT_BYTE_L);
-    return number;
-}
-
-std::vector<char> CAFF::readData(std::ifstream &file, const int64_t length) {
-    auto data = std::vector<char>((unsigned long) length);
-    file.read(data.data(), length);
-    return data;
-}
-
-void CAFF::parseHeader(std::vector<char> &data) {
+void CAFF::parseHeader(std::ifstream &file, int64_t length) {
     // Check magic
-    std::string magic(data.begin(), data.begin() + MAGIC_L);
+    std::string magic = readString(file, MAGIC_L);
     if (magic != "CAFF") {
         std::cerr << "Wrong magic in header" << std::endl;
     }
 
     // Check header size correct
-    auto header_size = convertVectorToInt(data, MAGIC_L);
-    if (header_size != data.size()) {
+    auto header_size = readInt(file);
+    if (header_size != length) {
         std::cerr << "Wrong header_size in header" << std::endl;
     }
 
     // Save numbers of animated CIFFs
-    num_anim = convertVectorToInt(data, MAGIC_L + EIGHT_BYTE_L);
+    num_anim = readInt(file);
 }
 
-void CAFF::parseCredits(std::vector<char> &data) {
+void CAFF::parseCredits(std::ifstream &file, int64_t length) {
     // Year
-    date.year = convertVectorToInt<int16_t>(data, 0);
+    date.year = readInt<int16_t>(file);
     // Month
-    date.month = convertVectorToInt<u_int8_t>(data, TWO_BYTE_L);
+    date.month = readInt<u_int8_t>(file);
     // Day
-    date.day = convertVectorToInt<u_int8_t>(data, TWO_BYTE_L + BYTE_L);
+    date.day = readInt<u_int8_t>(file);
     // Hour
-    date.hour = convertVectorToInt<u_int8_t>(data, TWO_BYTE_L + 2 * BYTE_L);
+    date.hour = readInt<u_int8_t>(file);
     // Minute
-    date.minute = convertVectorToInt<u_int8_t>(data, TWO_BYTE_L + 3 * BYTE_L);
+    date.minute = readInt<u_int8_t>(file);
 
     // creator_len
-    auto creator_len = convertVectorToInt(data, TWO_BYTE_L + 4 * BYTE_L);
+    auto creator_len = readInt(file);
 
     // creator
-    auto creator_start = data.begin() + TWO_BYTE_L + 4 * BYTE_L + EIGHT_BYTE_L;
-    creator = std::string(creator_start, creator_start + creator_len);
+    creator = readString(file, creator_len);
 
 }
 
-void CAFF::parseAnimation(std::vector<char> &data) {
+void CAFF::parseAnimation(std::ifstream &file, int64_t length) {
     // Duration
-    auto duration = convertVectorToInt(data, 0);
+    auto duration = readInt(file);
 
     // Parse CIFF
     CIFF ciff;
-    auto ciff_data = std::vector(data.begin() + EIGHT_BYTE_L, data.end());
-    ciff.parseCiff(ciff_data);
+    ciff.parseCiff(file, length);
     ciff_list.emplace_back(duration, ciff);
 }
 

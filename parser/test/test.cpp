@@ -15,7 +15,7 @@ protected:
     void SetUp() override {
         // remove all generated files
         auto path = fs::path("res/out");
-        if (!fs::is_empty(path)) {
+        if (fs::exists(path) && !fs::is_empty(path)) {
             fs::remove_all(path);
         }
     }

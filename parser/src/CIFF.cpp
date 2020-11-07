@@ -1,59 +1,58 @@
 #include <algorithm>
 #include <sstream>
 #include "CIFF.hpp"
-#include "util.hpp"
 
-void CIFF::parseCiff(std::vector<char> &data) {
-    auto content = parseHeader(data);
-    parseContent(content);
+
+void CIFF::parseCiff(std::ifstream &file, int64_t length) {
+    auto size = parseHeader(file);
+    parseContent(file, size);
 }
 
-std::vector<char> CIFF::parseHeader(std::vector<char> &data) {
+int64_t CIFF::parseHeader(std::ifstream &file) {
+    auto header_start = file.tellg();
     // Check magic
-    std::string magic(data.begin(), data.begin() + MAGIC_L);
+    std::string magic = readString(file, MAGIC_L);
     if (magic != "CIFF") {
         std::cerr << "Wrong magic in header" << std::endl;
     }
 
     // Parse header_size
-    const auto header_size = convertVectorToInt(data, MAGIC_L);
+    const auto header_size = readInt(file);
+    auto header_end = header_start + header_size;
 
     // Parse content_size
-    const auto content_size = convertVectorToInt(data, MAGIC_L + EIGHT_BYTE_L);
+    const auto content_size = readInt(file);
 
     // Parse width
-    width = convertVectorToInt(data, MAGIC_L + 2 * EIGHT_BYTE_L);
+    width = readInt(file);
 
     // Parse height
-    height = convertVectorToInt(data, MAGIC_L + 3 * EIGHT_BYTE_L);
+    height = readInt(file);
 
     // Parse caption
-    const auto caption_end = parseCaption(data, MAGIC_L + 4 * EIGHT_BYTE_L,
-                                          header_size);
+    parseCaption(file, header_end);
 
     //Parse tags
-    parseTags(data, caption_end, header_size);
+    parseTags(file, header_end);
 
-    return std::vector<char>(data.begin() + header_size, data.end());
+    return content_size;
 }
 
-void CIFF::parseContent(std::vector<char> &data) {
+void CIFF::parseContent(std::ifstream &file, int64_t size) {
+    auto data = readData(file, size);
     pixels.insert(pixels.end(), data.begin(), data.end());
 }
 
-std::vector<char>::iterator CIFF::parseCaption(std::vector<char> &data, int startIndex,
-                                               const long size) {
-    auto n = std::find(data.begin() + startIndex, data.begin() + size, '\n');
-    caption = std::string(data.begin() + startIndex, n);
-    return n + 1; // plus 1 because of the /n
+void CIFF::parseCaption(std::ifstream &file, std::streampos end) {
+    std::getline(file, caption, '\n');
+    //TODO error if bigger than end
 }
 
-void CIFF::parseTags(std::vector<char> &data, std::vector<char>::iterator startIndex,
-                     const long size) {
-    std::stringstream tag_source(std::string(startIndex, data.begin() + size));
+void CIFF::parseTags(std::ifstream &file, std::streampos end) {
     std::string buffer;
 
-    while (std::getline(tag_source, buffer, '\000')) {
+    while (file.tellg() < end) {
+        std::getline(file, buffer, '\000');
         tags.emplace_back(buffer);
     }
 }
@@ -62,7 +61,7 @@ json CIFF::generateJson() {
     json j = {
             {"caption", caption},
             {"size",    {{"width", width}, {"height", height}}},
-            {"tags", tags}
+            {"tags",    tags}
     };
     return j;
 }

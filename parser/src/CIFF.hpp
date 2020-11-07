@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "util.hpp"
 
 #include <nlohmann/json.hpp>
 
@@ -16,18 +17,18 @@ public:
     std::vector<std::string> tags;
     std::vector<unsigned char> pixels;
 
-    void parseCiff(std::vector<char> &data);
+    void parseCiff(std::ifstream &file, int64_t length);
 
     json generateJson();
 
 private:
-    std::vector<char> parseHeader(std::vector<char> &data);
+    int64_t parseHeader(std::ifstream &file);
 
-    void parseContent(std::vector<char> &data);
+    void parseContent(std::ifstream &file, int64_t size);
 
-    std::vector<char>::iterator parseCaption(std::vector<char> &data, int startIndex, long size);
+    void parseCaption(std::ifstream &file , std::streampos end);
 
-    void parseTags(std::vector<char> &data, std::vector<char>::iterator startIndex, long size);
+    void parseTags(std::ifstream &file, std::streampos end);
 };
 
 #endif //PARSER_CIFF_HPP

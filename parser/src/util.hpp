@@ -2,21 +2,27 @@
 #define PARSER_UTIL_HPP
 
 #include <iostream>
+#include <fstream>
 #include <vector>
-
-static const int BYTE_L = 1;
-
-static const int TWO_BYTE_L = 2;
 
 static const int MAGIC_L = 4;
 
-static const int EIGHT_BYTE_L = 8;
-
 template<class T = int64_t>
-T convertVectorToInt(std::vector<char> data, int start_index) {
-    auto header_size_vec = std::vector(data.begin() + start_index,
-                                       data.begin() + start_index + sizeof(T));
-    return *reinterpret_cast<T *>(header_size_vec.data());
+T readInt(std::ifstream &file) {
+    T number;
+    file.read(reinterpret_cast<char *>(&number), sizeof(T));
+    return number;
+}
+
+static std::vector<char> readData(std::ifstream &file, int64_t length){
+    auto data = std::vector<char>((unsigned long) length);
+    file.read(data.data(), length);
+    return data;
+}
+
+static std::string readString(std::ifstream &file, int64_t length){
+    auto data = readData(file, length);
+    return std::string(data.begin(), data.end());
 }
 
 #endif //PARSER_UTIL_HPP

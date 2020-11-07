@@ -42,21 +42,18 @@ private:
 
     static FrameID readFrameID(std::ifstream &file);
 
-    static int64_t readLength(std::ifstream &file);
+    void parseHeader(std::ifstream &file, int64_t length);
 
-    static std::vector<char> readData(std::ifstream &file, int64_t length);
+    void parseCredits(std::ifstream &file, int64_t length);
 
-    void parseHeader(std::vector<char> &data);
-
-    void parseCredits(std::vector<char> &data);
-
-    void parseAnimation(std::vector<char> &data);
+    void parseAnimation(std::ifstream &file, int64_t length);
 
     void generateJson();
 
     void generateImage();
 
     void verifyOutputPath();
+
 };
 
 #endif //PARSER_CAFF_HPP
