@@ -1,0 +1,38 @@
+{
+    "ciff_s": [
+        {
+            "caption": "Beautiful scenery",
+            "duration": 1000,
+            "size": {
+                "height": 667,
+                "width": 1000
+            },
+            "tags": [
+                "landscape",
+                "sunset",
+                "mountains"
+            ]
+        },
+        {
+            "caption": "Beautiful scenery",
+            "duration": 1000,
+            "size": {
+                "height": 667,
+                "width": 1000
+            },
+            "tags": [
+                "landscape",
+                "sunset",
+                "mountains"
+            ]
+        }
+    ],
+    "creator": "Test Creator",
+    "date": {
+        "day": 2,
+        "hour": 14,
+        "minute": 50,
+        "month": 7,
+        "year": 2020
+    }
+}
