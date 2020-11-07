@@ -17,18 +17,18 @@ public:
     std::vector<std::string> tags;
     std::vector<unsigned char> pixels;
 
-    void parseCiff(std::ifstream &file, int64_t length);
+    void parseCiff(std::istream &file, int64_t length);
 
     json generateJson();
 
 private:
-    int64_t parseHeader(std::ifstream &file);
+    int64_t parseHeader(std::istream &file);
 
-    void parseContent(std::ifstream &file, int64_t size);
+    void parseContent(std::istream &file, int64_t size);
 
-    void parseCaption(std::ifstream &file , std::streampos end);
+    void parseCaption(std::istream &file , std::streampos end);
 
-    void parseTags(std::ifstream &file, std::streampos end);
+    void parseTags(std::istream &file, std::streampos end);
 };
 
 #endif //PARSER_CIFF_HPP

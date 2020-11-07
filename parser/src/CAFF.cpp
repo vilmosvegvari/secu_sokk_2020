@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <filesystem>
 
 #include "CAFF.hpp"
@@ -14,7 +16,7 @@ CAFF::CAFF(const std::string &path, const std::string &outputPath) : file_path(p
 }
 
 void CAFF::parseCaff() {
-    std::ifstream caffFile(this->file_path, std::ios::binary);
+    std::ifstream caffFile(file_path, std::ios::binary);
     //TODO check if first frame Header & only one header
     if (caffFile.is_open()) {
         while (caffFile.peek() != EOF) {
@@ -25,7 +27,7 @@ void CAFF::parseCaff() {
     caffFile.close();
 }
 
-void CAFF::readFrame(std::ifstream &file) {
+void CAFF::readFrame(std::istream &file) {
     const auto frameId = readFrameID(file);
     const int64_t length = readInt(file);
     switch (frameId) {
@@ -41,11 +43,11 @@ void CAFF::readFrame(std::ifstream &file) {
     }
 }
 
-CAFF::FrameID CAFF::readFrameID(std::ifstream &file) {
+CAFF::FrameID CAFF::readFrameID(std::istream &file) {
     return FrameID(file.get());
 }
 
-void CAFF::parseHeader(std::ifstream &file, int64_t length) {
+void CAFF::parseHeader(std::istream &file, int64_t length) {
     // Check magic
     std::string magic = readString(file, MAGIC_L);
     if (magic != "CAFF") {
@@ -62,7 +64,7 @@ void CAFF::parseHeader(std::ifstream &file, int64_t length) {
     num_anim = readInt(file);
 }
 
-void CAFF::parseCredits(std::ifstream &file, int64_t length) {
+void CAFF::parseCredits(std::istream &file, int64_t length) {
     // Year
     date.year = readInt<int16_t>(file);
     // Month
@@ -82,7 +84,7 @@ void CAFF::parseCredits(std::ifstream &file, int64_t length) {
 
 }
 
-void CAFF::parseAnimation(std::ifstream &file, int64_t length) {
+void CAFF::parseAnimation(std::istream &file, int64_t length) {
     // Duration
     auto duration = readInt(file);
 

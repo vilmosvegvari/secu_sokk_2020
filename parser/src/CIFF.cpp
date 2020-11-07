@@ -3,12 +3,12 @@
 #include "CIFF.hpp"
 
 
-void CIFF::parseCiff(std::ifstream &file, int64_t length) {
+void CIFF::parseCiff(std::istream &file, int64_t length) {
     auto size = parseHeader(file);
     parseContent(file, size);
 }
 
-int64_t CIFF::parseHeader(std::ifstream &file) {
+int64_t CIFF::parseHeader(std::istream &file) {
     auto header_start = file.tellg();
     // Check magic
     std::string magic = readString(file, MAGIC_L);
@@ -38,17 +38,17 @@ int64_t CIFF::parseHeader(std::ifstream &file) {
     return content_size;
 }
 
-void CIFF::parseContent(std::ifstream &file, int64_t size) {
+void CIFF::parseContent(std::istream &file, int64_t size) {
     auto data = readData(file, size);
     pixels.insert(pixels.end(), data.begin(), data.end());
 }
 
-void CIFF::parseCaption(std::ifstream &file, std::streampos end) {
+void CIFF::parseCaption(std::istream &file, std::streampos end) {
     std::getline(file, caption, '\n');
     //TODO error if bigger than end
 }
 
-void CIFF::parseTags(std::ifstream &file, std::streampos end) {
+void CIFF::parseTags(std::istream &file, std::streampos end) {
     std::string buffer;
 
     while (file.tellg() < end) {

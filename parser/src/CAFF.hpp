@@ -38,15 +38,15 @@ private:
         ANIMATION = 3
     };
 
-    void readFrame(std::ifstream &file);
+    void readFrame(std::istream &file);
 
-    static FrameID readFrameID(std::ifstream &file);
+    static FrameID readFrameID(std::istream &file);
 
-    void parseHeader(std::ifstream &file, int64_t length);
+    void parseHeader(std::istream &file, int64_t length);
 
-    void parseCredits(std::ifstream &file, int64_t length);
+    void parseCredits(std::istream &file, int64_t length);
 
-    void parseAnimation(std::ifstream &file, int64_t length);
+    void parseAnimation(std::istream &file, int64_t length);
 
     void generateJson();
 
