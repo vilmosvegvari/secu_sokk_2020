@@ -39,13 +39,7 @@ CAFF::FrameID CAFF::readFrame(std::istream &file) {
     const int64_t length = readInt(file);
     switch (frameId) {
         case HEADER:
-            if (isHeaderParsedAlready){
-                throw BadFileFormatException("Duplicate HEADER frame");
-            }
-
             parseHeader(file, length);
-
-            isHeaderParsedAlready = true;
             break;
         case CREDITS:
             if (isCreditsParsedAlready){
@@ -70,6 +64,11 @@ CAFF::FrameID CAFF::readFrameID(std::istream &file) {
 }
 
 void CAFF::parseHeader(std::istream &file, int64_t length) {
+    //Check if HEADER already exists
+    if (isHeaderParsedAlready){
+        throw BadFileFormatException("Duplicate HEADER frame");
+    }
+
     // Check magic
     std::string magic = readString(file, MAGIC_L);
     if (magic != "CAFF") {
@@ -84,6 +83,8 @@ void CAFF::parseHeader(std::istream &file, int64_t length) {
 
     // Save numbers of animated CIFFs
     num_anim = readInt(file);
+
+    isHeaderParsedAlready = true;
 }
 
 void CAFF::parseCredits(std::istream &file, int64_t length) {
