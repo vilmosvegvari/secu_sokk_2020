@@ -125,7 +125,7 @@ TEST_F (CAFFTest /*test suite name*/, GeneratesFiles /*test name*/) {
 }
 
 TEST_F(CAFFTest, TestBigFile) {
-    fs::path caff_file_path = "res/big.caff";
+    fs::path caff_file_path = "res/fuzz/big.caff";
     fs::path output_path = "res/out";
 
     CAFF caff(caff_file_path, output_path);
@@ -143,7 +143,7 @@ TEST_F(CAFFTest, TestBigFile) {
 }
 
 TEST_F(CAFFTest, TestBadStringsFile) {
-    fs::path caff_file_path = "res/bad_strings.caff";
+    fs::path caff_file_path = "res/fuzz/bad_strings.caff";
     fs::path output_path = "res/out";
 
     CAFF caff(caff_file_path, output_path);
@@ -161,7 +161,7 @@ TEST_F(CAFFTest, TestBadStringsFile) {
 }
 
 TEST_F(CAFFTest, TestBadLengthFile) {
-    fs::path caff_file_path = "res/bad_length.caff";
+    fs::path caff_file_path = "res/fuzz/bad_length.caff";
     fs::path output_path = "res/out";
 
     CAFF caff(caff_file_path, output_path);
