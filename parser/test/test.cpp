@@ -83,6 +83,21 @@ TEST_F(CAFFTest, TestGenerateJSONFromCIFF){
     EXPECT_EQ(out, expected_json);
 }
 
+TEST_F(CAFFTest, TestParseCAFF){
+    fs::path caff_file_path = "res/1.caff";
+    fs::path output_path = "res/out";
+    CAFF caff(caff_file_path, output_path);
+    caff.parseCaff();
+
+    EXPECT_EQ(caff.getCreator(), "Test Creator");
+    EXPECT_EQ(caff.getNumAnim(), 2);
+    EXPECT_EQ(caff.getDate().year, 2020);
+    EXPECT_EQ(caff.getDate().month, 7);
+    EXPECT_EQ(caff.getDate().day, 2);
+    EXPECT_EQ(caff.getDate().hour, 14);
+    EXPECT_EQ(caff.getDate().minute, 50);
+}
+
 TEST_F (CAFFTest /*test suite name*/, GeneratesFiles /*test name*/) {
     fs::path caff_file_path = "res/1.caff";
     fs::path output_path = "res/out";
