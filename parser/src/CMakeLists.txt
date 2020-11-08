@@ -1,3 +1,7 @@
+# protection
+add_compile_options("-fstack-protector-strong")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # main files
 set(HEADER_FILES
         CAFF.hpp
@@ -48,3 +52,5 @@ target_link_libraries(${PROJECT_NAME}_lib PRIVATE ${ImageMagick_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_lib PUBLIC nlohmann_json::nlohmann_json)
 
 target_include_directories(${PROJECT_NAME}_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+
