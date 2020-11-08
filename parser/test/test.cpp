@@ -1,4 +1,3 @@
-#include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <iterator>
@@ -27,8 +26,8 @@ protected:
 public:
 
     static bool compareFiles(const std::string &p1, const std::string &p2) {
-        std::ifstream f1(p1, std::ifstream::binary | std::ifstream::ate);
-        std::ifstream f2(p2, std::ifstream::binary | std::ifstream::ate);
+        std::ifstream f1(p1, std::ifstream::binary);
+        std::ifstream f2(p2, std::ifstream::binary);
 
         if (f1.fail() || f2.fail()) {
             return false; //file problem
@@ -38,16 +37,29 @@ public:
             return false; //size mismatch
         }
 
-        //seek back to beginning and use std::equal to compare contents
-        f1.seekg(0, std::ifstream::beg);
-        f2.seekg(0, std::ifstream::beg);
         return std::equal(std::istreambuf_iterator<char>(f1.rdbuf()),
                           std::istreambuf_iterator<char>(),
                           std::istreambuf_iterator<char>(f2.rdbuf()));
     }
+
+    static bool compareJson(const std::string &p1, const std::string &p2) {
+        std::ifstream f1(p1, std::ifstream::binary);
+        std::ifstream f2(p2, std::ifstream::binary);
+
+        if (f1.fail() || f2.fail()) {
+            return false; //file problem
+        }
+
+        // parse json
+        json j1, j2;
+        f1 >> j1;
+        f2 >> j2;
+
+        return j1 == j2;
+    }
 };
 
-TEST_F(CAFFTest, TestParseCIFF){
+TEST_F(CAFFTest, TestParseCIFF) {
     fs::path caff_file_path = "res/1.caff";
     std::ifstream caff_file(caff_file_path, std::ios::binary);
 
@@ -64,7 +76,7 @@ TEST_F(CAFFTest, TestParseCIFF){
     EXPECT_EQ(ciff.getTags(), expected_tags);
 }
 
-TEST_F(CAFFTest, TestGenerateJSONFromCIFF){
+TEST_F(CAFFTest, TestGenerateJSONFromCIFF) {
     fs::path caff_file_path = "res/1.caff";
     std::ifstream caff_file(caff_file_path, std::ios::binary);
 
@@ -83,7 +95,7 @@ TEST_F(CAFFTest, TestGenerateJSONFromCIFF){
     EXPECT_EQ(out, expected_json);
 }
 
-TEST_F(CAFFTest, TestParseCAFF){
+TEST_F(CAFFTest, TestParseCAFF) {
     fs::path caff_file_path = "res/1.caff";
     fs::path output_path = "res/out";
     CAFF caff(caff_file_path, output_path);
@@ -107,7 +119,7 @@ TEST_F (CAFFTest /*test suite name*/, GeneratesFiles /*test name*/) {
 
     ASSERT_FALSE(fs::is_empty(output_path));
     ASSERT_TRUE(CAFFTest::compareFiles("res/expected/1.gif", "res/out/1.gif"));
-    ASSERT_TRUE(CAFFTest::compareFiles("res/expected/1.json", "res/out/1.json"));
+    ASSERT_TRUE(CAFFTest::compareJson("res/expected/1.json", "res/out/1.json"));
 }
 
 
