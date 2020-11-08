@@ -18,9 +18,6 @@ CAFF::CAFF(const std::string &path, const std::string &outputPath) : file_path(p
 void CAFF::parseCaff() {
     std::ifstream caffFile(file_path, std::ios::binary);
     if (caffFile.is_open()) {
-        if(!isFileStartingWithHeader(caffFile)){
-            throw BadFileFormatException("First frame is not header!");
-        }
         while (caffFile.peek() != EOF) {
             readFrame(caffFile);
         }
@@ -29,19 +26,27 @@ void CAFF::parseCaff() {
     caffFile.close();
 }
 
-bool CAFF::isFileStartingWithHeader(std::istream &file){
-    return FrameID(file.peek()) == HEADER;
-}
-
 void CAFF::readFrame(std::istream &file) {
     const auto frameId = readFrameID(file);
     const int64_t length = readInt(file);
     switch (frameId) {
         case HEADER:
+            if (isHeaderParsedAlready){
+                throw BadFileFormatException("Duplicate HEADER frame");
+            }
+
             parseHeader(file, length);
+
+            isHeaderParsedAlready = true;
             break;
         case CREDITS:
+            if (isCreditsParsedAlready){
+                throw BadFileFormatException("Duplicate CREDITS frame");
+            }
+
             parseCredits(file, length);
+
+            isCreditsParsedAlready = true;
             break;
         case ANIMATION:
             parseAnimation(file, length);
@@ -57,7 +62,7 @@ void CAFF::parseHeader(std::istream &file, int64_t length) {
     // Check magic
     std::string magic = readString(file, MAGIC_L);
     if (magic != "CAFF") {
-        throw BadFileFormatException("Wrong magic in header");
+        throw BadFileFormatException("Wrong MAGIC in HEADER");
     }
 
     // Check header size correct
@@ -87,7 +92,7 @@ void CAFF::parseCredits(std::istream &file, int64_t length) {
 
     // creator
     creator = readString(file, creator_len);
-
+    
 }
 
 void CAFF::parseAnimation(std::istream &file, int64_t length) {
