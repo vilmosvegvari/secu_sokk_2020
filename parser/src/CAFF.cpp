@@ -124,11 +124,7 @@ void CAFF::generateFiles() {
 
 void CAFF::generateJson() {
     json j = {{"creator", creator},
-              {"date",    {{"year", date.year},
-                                  {"month", date.month},
-                                  {"day", date.day},
-                                  {"hour", date.hour},
-                                  {"minute", date.minute}}},
+              {"date",    date.generateJson()},
     };
     j["ciff_s"] = json::array();
     for (auto &ciff : ciff_list) {

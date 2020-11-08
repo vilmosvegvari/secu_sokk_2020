@@ -1,6 +1,7 @@
 #ifndef PARSER_DATE_HPP
 #define PARSER_DATE_HPP
 
+#include <nlohmann/json.hpp>
 
 class Date {
 public:
@@ -9,6 +10,14 @@ public:
     int day = -1;
     int hour = -1;
     int minute = -1;
+
+    nlohmann::json generateJson(){
+        return json{{"year",   year},
+                    {"month",  month},
+                    {"day",    day},
+                    {"hour",   hour},
+                    {"minute", minute}};
+    }
 };
 
 
