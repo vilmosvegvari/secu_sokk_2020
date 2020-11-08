@@ -23,6 +23,12 @@ public:
 
     void generateFiles();
 
+    int64_t getNumAnim() const;
+
+    const Date &getDate() const;
+
+    const std::string &getCreator() const;
+
 private:
     const fs::path file_path;
     fs::path output_path;
@@ -54,6 +60,7 @@ private:
 
     void verifyOutputPath();
 
+    bool isFileStartingWithHeader(std::istream &file);
 };
 
 #endif //PARSER_CAFF_HPP

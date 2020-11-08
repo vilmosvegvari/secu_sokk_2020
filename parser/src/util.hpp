@@ -25,4 +25,15 @@ static std::string readString(std::istream &file, int64_t length){
     return std::string(data.begin(), data.end());
 }
 
+class BadFileFormatException : public std::exception {
+public:
+    std::string msg;
+
+    explicit BadFileFormatException(const std::string& msg): msg(msg) {}
+
+    const char * what() const noexcept override{
+        return msg.c_str();
+    }
+};
+
 #endif //PARSER_UTIL_HPP

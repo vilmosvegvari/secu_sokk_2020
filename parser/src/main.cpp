@@ -26,8 +26,10 @@ int main(int argc, char *argv[]) {
         CAFF caff(caff_file_path, output_path);
         caff.parseCaff();
         caff.generateFiles();
+    } catch (BadFileFormatException &e) {
+        std::cout << "Bad file format!: " << e.what();
     } catch (...) {
-        // TODO
+
     }
     return 0;
 }

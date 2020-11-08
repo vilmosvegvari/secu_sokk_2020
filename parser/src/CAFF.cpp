@@ -17,14 +17,20 @@ CAFF::CAFF(const std::string &path, const std::string &outputPath) : file_path(p
 
 void CAFF::parseCaff() {
     std::ifstream caffFile(file_path, std::ios::binary);
-    //TODO check if first frame Header & only one header
     if (caffFile.is_open()) {
+        if(!isFileStartingWithHeader(caffFile)){
+            throw BadFileFormatException("First frame is not header!");
+        }
         while (caffFile.peek() != EOF) {
             readFrame(caffFile);
         }
     }
     //TODO validate
     caffFile.close();
+}
+
+bool CAFF::isFileStartingWithHeader(std::istream &file){
+    return FrameID(file.peek()) == HEADER;
 }
 
 void CAFF::readFrame(std::istream &file) {
@@ -51,13 +57,13 @@ void CAFF::parseHeader(std::istream &file, int64_t length) {
     // Check magic
     std::string magic = readString(file, MAGIC_L);
     if (magic != "CAFF") {
-        std::cerr << "Wrong magic in header" << std::endl;
+        throw BadFileFormatException("Wrong magic in header");
     }
 
     // Check header size correct
     auto header_size = readInt(file);
     if (header_size != length) {
-        std::cerr << "Wrong header_size in header" << std::endl;
+        throw BadFileFormatException("Wrong header_size in header");
     }
 
     // Save numbers of animated CIFFs
@@ -138,4 +144,16 @@ void CAFF::verifyOutputPath() {
     if (!fs::exists(output_path)) {
         fs::create_directories(output_path);
     }
+}
+
+int64_t CAFF::getNumAnim() const {
+    return num_anim;
+}
+
+const Date &CAFF::getDate() const {
+    return date;
+}
+
+const std::string &CAFF::getCreator() const {
+    return creator;
 }
