@@ -13,7 +13,7 @@ int64_t CIFF::parseHeader(std::istream &file) {
     // Check magic
     std::string magic = readString(file, MAGIC_L);
     if (magic != "CIFF") {
-        std::cerr << "Wrong magic in header" << std::endl;
+        throw BadFileFormatException("Wrong magic in CIFF HEADER");
     }
 
     // Parse header_size
