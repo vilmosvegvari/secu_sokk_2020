@@ -31,7 +31,7 @@ void CAFF::parseCaff() {
             readFrame(caffFile);
         }
     } else {
-        throw std::bad_typeid();
+        throw BadFileFormatException("Can't open file!");
     }
     caffFile.close();
 }
