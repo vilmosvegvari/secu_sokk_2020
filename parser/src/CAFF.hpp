@@ -39,7 +39,6 @@ private:
     std::string creator;
 
     bool isHeaderParsedAlready = false;
-    bool isCreditsParsedAlready = false;
 
     enum FrameID : unsigned char {
         HEADER = 1,

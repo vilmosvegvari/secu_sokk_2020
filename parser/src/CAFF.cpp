@@ -42,13 +42,7 @@ CAFF::FrameID CAFF::readFrame(std::istream &file) {
             parseHeader(file, length);
             break;
         case CREDITS:
-            if (isCreditsParsedAlready){
-                throw BadFileFormatException("Duplicate CREDITS frame");
-            }
-
             parseCredits(file, length);
-
-            isCreditsParsedAlready = true;
             break;
         case ANIMATION:
             parseAnimation(file, length);
