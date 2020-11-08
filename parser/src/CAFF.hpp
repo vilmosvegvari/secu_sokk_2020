@@ -47,7 +47,7 @@ private:
         ANIMATION = 3
     };
 
-    void readFrame(std::istream &file);
+    FrameID readFrame(std::istream &file);
 
     static FrameID readFrameID(std::istream &file);
 
@@ -62,8 +62,6 @@ private:
     void generateImage();
 
     void verifyOutputPath();
-
-    bool isFileStartingWithHeader(std::istream &file);
 };
 
 #endif //PARSER_CAFF_HPP

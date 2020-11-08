@@ -7,6 +7,11 @@
 int main(int argc, char *argv[]) {
     std::string caff_file_path, output_path;
 
+    if (argc <= 1) {
+        std::cerr << "No parameter provided!";
+        return -1;
+    }
+
     int c;
     while ((c = getopt(argc, argv, "f:o:")) != -1) {
         switch (c) {

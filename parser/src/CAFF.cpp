@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <filesystem>
+#include <stdexcept>
 
 #include "CAFF.hpp"
 
@@ -18,15 +19,22 @@ CAFF::CAFF(const std::string &path, const std::string &outputPath) : file_path(p
 void CAFF::parseCaff() {
     std::ifstream caffFile(file_path, std::ios::binary);
     if (caffFile.is_open()) {
+        //Check first frame
+        if (readFrame(caffFile) != HEADER) {
+            throw std::bad_typeid();
+        }
+
+        // Read the rest of the frames
         while (caffFile.peek() != EOF) {
             readFrame(caffFile);
         }
+    } else {
+        throw BadFileFormatException("File must start with HEADER frame!");
     }
-    //TODO validate
     caffFile.close();
 }
 
-void CAFF::readFrame(std::istream &file) {
+CAFF::FrameID CAFF::readFrame(std::istream &file) {
     const auto frameId = readFrameID(file);
     const int64_t length = readInt(file);
     switch (frameId) {
@@ -51,7 +59,10 @@ void CAFF::readFrame(std::istream &file) {
         case ANIMATION:
             parseAnimation(file, length);
             break;
+        default:
+            throw std::bad_typeid();
     }
+    return frameId;
 }
 
 CAFF::FrameID CAFF::readFrameID(std::istream &file) {
