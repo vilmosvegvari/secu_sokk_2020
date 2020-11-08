@@ -139,7 +139,7 @@ void CAFF::generateImage() {
     std::vector<Magick::Image> frames;
     for (auto &i : ciff_list) {
         auto ciff = std::get<1>(i);
-        Magick::Image image(ciff.width, ciff.height, "RGB", MagickCore::CharPixel, ciff.pixels.data());
+        Magick::Image image(ciff.getWidth(), ciff.getHeight(), "RGB", MagickCore::CharPixel, ciff.getPixels().data());
         image.animationDelay(std::get<0>(i) / 10);
         frames.emplace_back(image);
     }

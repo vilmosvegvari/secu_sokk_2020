@@ -65,3 +65,23 @@ json CIFF::generateJson() {
     };
     return j;
 }
+
+long CIFF::getWidth() const {
+    return width;
+}
+
+long CIFF::getHeight() const {
+    return height;
+}
+
+const std::string &CIFF::getCaption() const {
+    return caption;
+}
+
+const std::vector<std::string> &CIFF::getTags() const {
+    return tags;
+}
+
+const std::vector<unsigned char> &CIFF::getPixels() const {
+    return pixels;
+}

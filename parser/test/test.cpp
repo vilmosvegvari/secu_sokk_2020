@@ -57,11 +57,11 @@ TEST_F(CAFFTest, TestParseCIFF){
     ciff.parseCiff(caff_file, 0x1E881C);
 
     std::vector<std::string> expected_tags{"landscape", "sunset", "mountains"};
-    EXPECT_EQ(ciff.caption, "Beautiful scenery");
-    EXPECT_EQ(ciff.pixels[0], 0x2D);
-    EXPECT_EQ(ciff.height, 667);
-    EXPECT_EQ(ciff.width, 1000);
-    EXPECT_EQ(ciff.tags, expected_tags);
+    EXPECT_EQ(ciff.getCaption(), "Beautiful scenery");
+    EXPECT_EQ(ciff.getPixels()[0], 0x2D);
+    EXPECT_EQ(ciff.getHeight(), 667);
+    EXPECT_EQ(ciff.getWidth(), 1000);
+    EXPECT_EQ(ciff.getTags(), expected_tags);
 }
 
 TEST_F(CAFFTest, TestGenerateJSONFromCIFF){
