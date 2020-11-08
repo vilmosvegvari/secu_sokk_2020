@@ -32,6 +32,7 @@ public:
 private:
     const fs::path file_path;
     fs::path output_path;
+    uintmax_t file_size = 0;
 
     int64_t num_anim = -1;
     std::vector<std::tuple<int64_t, CIFF>> ciff_list;
@@ -61,6 +62,8 @@ private:
     void generateImage();
 
     void verifyOutputPath();
+
+    bool isLengthTooLarge(int64_t length) const;
 };
 
 #endif //PARSER_CAFF_HPP

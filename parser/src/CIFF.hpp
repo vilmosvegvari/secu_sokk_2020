@@ -31,6 +31,11 @@ private:
     std::string caption;
     std::vector<std::string> tags;
     std::vector<unsigned char> pixels;
+    uintmax_t file_size = 0;
+public:
+    void setFileSize(uintmax_t fileSize);
+
+private:
 
     int64_t parseHeader(std::istream &file);
 
@@ -39,6 +44,8 @@ private:
     void parseCaption(std::istream &file , std::streampos end);
 
     void parseTags(std::istream &file, std::streampos end);
+
+    bool isLengthTooLarge(int64_t length) const;
 };
 
 #endif //PARSER_CIFF_HPP

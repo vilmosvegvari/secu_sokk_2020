@@ -18,10 +18,17 @@ int64_t CIFF::parseHeader(std::istream &file) {
 
     // Parse header_size
     const auto header_size = readInt(file);
+    if(isLengthTooLarge(header_size)){
+        throw BadFileFormatException("CIFF header_size is too big");
+    }
+
     auto header_end = header_start + header_size;
 
     // Parse content_size
     const auto content_size = readInt(file);
+    if(isLengthTooLarge(header_size)){
+        throw BadFileFormatException("CIFF content_size is too big");
+    }
 
     // Parse width
     width = readInt(file);
@@ -84,4 +91,12 @@ const std::vector<std::string> &CIFF::getTags() const {
 
 const std::vector<unsigned char> &CIFF::getPixels() const {
     return pixels;
+}
+
+void CIFF::setFileSize(uintmax_t fileSize) {
+    file_size = fileSize;
+}
+
+bool CIFF::isLengthTooLarge(int64_t length) const {
+    return length > file_size;
 }

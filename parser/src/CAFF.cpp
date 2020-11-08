@@ -18,10 +18,12 @@ CAFF::CAFF(const std::string &path, const std::string &outputPath) : file_path(p
 
 void CAFF::parseCaff() {
     std::ifstream caffFile(file_path, std::ios::binary);
+
     if (caffFile.is_open()) {
+        file_size = fs::file_size(file_path);
         //Check first frame
         if (readFrame(caffFile) != HEADER) {
-            throw std::bad_typeid();
+            throw BadFileFormatException("File must start with HEADER frame!");
         }
 
         // Read the rest of the frames
@@ -29,7 +31,7 @@ void CAFF::parseCaff() {
             readFrame(caffFile);
         }
     } else {
-        throw BadFileFormatException("File must start with HEADER frame!");
+        throw std::bad_typeid();
     }
     caffFile.close();
 }
@@ -37,6 +39,9 @@ void CAFF::parseCaff() {
 CAFF::FrameID CAFF::readFrame(std::istream &file) {
     const auto frameId = readFrameID(file);
     const int64_t length = readInt(file);
+    if(isLengthTooLarge(length)){
+        throw BadFileFormatException("Frame length is too big, frame id: " + std::to_string(frameId));
+    }
     switch (frameId) {
         case HEADER:
             parseHeader(file, length);
@@ -72,7 +77,7 @@ void CAFF::parseHeader(std::istream &file, int64_t length) {
     // Check header size correct
     auto header_size = readInt(file);
     if (header_size != length) {
-        throw BadFileFormatException("Wrong header_size in header");
+        throw BadFileFormatException("Wrong header_size in HEADER");
     }
 
     // Save numbers of animated CIFFs
@@ -95,6 +100,9 @@ void CAFF::parseCredits(std::istream &file, int64_t length) {
 
     // creator_len
     auto creator_len = readInt(file);
+    if(isLengthTooLarge(creator_len)){
+        throw BadFileFormatException("creator_length is too big");
+    }
 
     // creator
     creator = readString(file, creator_len);
@@ -107,6 +115,7 @@ void CAFF::parseAnimation(std::istream &file, int64_t length) {
 
     // Parse CIFF
     CIFF ciff;
+    ciff.setFileSize(file_size);
     ciff.parseCiff(file, length);
     ciff_list.emplace_back(duration, ciff);
 }
@@ -163,4 +172,8 @@ const Date &CAFF::getDate() const {
 
 const std::string &CAFF::getCreator() const {
     return creator;
+}
+
+bool CAFF::isLengthTooLarge(int64_t length) const {
+    return length > file_size;
 }
