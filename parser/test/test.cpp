@@ -66,6 +66,7 @@ TEST_F(CAFFTest, TestParseCIFF) {
     caff_file.seekg(0x51);
 
     CIFF ciff;
+    ciff.setFileSize(4002260);
     ciff.parseCiff(caff_file, 0x1E881C);
 
     std::vector<std::string> expected_tags{"landscape", "sunset", "mountains"};
@@ -83,6 +84,7 @@ TEST_F(CAFFTest, TestGenerateJSONFromCIFF) {
     caff_file.seekg(0x51);
 
     CIFF ciff;
+    ciff.setFileSize(4002260);
     ciff.parseCiff(caff_file, 0x1E881C);
     json out = ciff.generateJson();
 
@@ -120,6 +122,60 @@ TEST_F (CAFFTest /*test suite name*/, GeneratesFiles /*test name*/) {
     ASSERT_FALSE(fs::is_empty(output_path));
     ASSERT_TRUE(CAFFTest::compareFiles("res/expected/1.gif", "res/out/1.gif"));
     ASSERT_TRUE(CAFFTest::compareJson("res/expected/1.json", "res/out/1.json"));
+}
+
+TEST_F(CAFFTest, TestBigFile) {
+    fs::path caff_file_path = "res/fuzz/big.caff";
+    fs::path output_path = "res/out";
+
+    CAFF caff(caff_file_path, output_path);
+
+    EXPECT_THROW({
+                     try {
+                         caff.parseCaff();
+                     }
+                     catch (const BadFileFormatException &e) {
+                         // and this tests that it has the correct message
+                         EXPECT_STREQ("Frame length is too big, frame id: 29", e.what());
+                         throw;
+                     }
+                 }, BadFileFormatException);
+}
+
+TEST_F(CAFFTest, TestBadStringsFile) {
+    fs::path caff_file_path = "res/fuzz/bad_strings.caff";
+    fs::path output_path = "res/out";
+
+    CAFF caff(caff_file_path, output_path);
+
+    EXPECT_THROW({
+                     try {
+                         caff.parseCaff();
+                     }
+                     catch (const BadFileFormatException &e) {
+                         // and this tests that it has the correct message
+                         EXPECT_STREQ("Missing '\\0' or too long Tag section!", e.what());
+                         throw;
+                     }
+                 }, BadFileFormatException);
+}
+
+TEST_F(CAFFTest, TestBadLengthFile) {
+    fs::path caff_file_path = "res/fuzz/bad_length.caff";
+    fs::path output_path = "res/out";
+
+    CAFF caff(caff_file_path, output_path);
+
+    EXPECT_THROW({
+                     try {
+                         caff.parseCaff();
+                     }
+                     catch (const BadFileFormatException &e) {
+                         // and this tests that it has the correct message
+                         EXPECT_STREQ("Wrong header_size in HEADER", e.what());
+                         throw;
+                     }
+                 }, BadFileFormatException);
 }
 
 
