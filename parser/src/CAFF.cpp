@@ -53,7 +53,7 @@ CAFF::FrameID CAFF::readFrame(std::istream &file) {
             parseAnimation(file, length);
             break;
         default:
-            throw std::bad_typeid();
+            throw BadFileFormatException("Not valid frame id: " + std::to_string(frameId));
     }
     return frameId;
 }
