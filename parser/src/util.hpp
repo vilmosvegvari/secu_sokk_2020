@@ -3,7 +3,9 @@
 
 #include <iostream>
 #include <istream>
+#include <utility>
 #include <vector>
+#include <regex>
 
 static const int MAGIC_L = 4;
 
@@ -11,9 +13,9 @@ class BadFileFormatException : public std::exception {
 public:
     std::string msg;
 
-    explicit BadFileFormatException(const std::string& msg): msg(msg) {}
+    explicit BadFileFormatException(std::string  msg): msg(std::move(msg)) {}
 
-    const char * what() const noexcept override{
+    [[nodiscard]] const char * what() const noexcept override{
         return msg.c_str();
     }
 };
@@ -39,7 +41,11 @@ static std::vector<char> readData(std::istream &file, int64_t length){
 
 static std::string readString(std::istream &file, int64_t length){
     auto data = readData(file, length);
-    return std::string(data.begin(), data.end());
+    auto str = std::string(data.begin(), data.end());
+    if (!std::regex_match(str, std::regex("[ -~]+"))) {
+        throw BadFileFormatException("Non printable character in string!");
+    }
+    return str;
 }
 
 #endif //PARSER_UTIL_HPP

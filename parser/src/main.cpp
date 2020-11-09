@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         caff.parseCaff();
         caff.generateFiles();
     } catch (BadFileFormatException &e) {
-        std::cout << "Bad file format!: " << e.what();
+        std::cerr << "Bad file format!: " << e.what();
     }
     return 0;
 }

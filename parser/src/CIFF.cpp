@@ -56,6 +56,11 @@ void CIFF::parseContent(std::istream &file, int64_t size) {
 
 void CIFF::parseCaption(std::istream &file, std::streampos end) {
     std::getline(file, caption, '\n');
+
+    if (!std::regex_match(caption, std::regex("[ -~]+"))) {
+        throw BadFileFormatException("Non printable character in string!");
+    }
+
     if (file.tellg() > end || file.eof()) {
         throw  BadFileFormatException("Missing '\\n' or too long Caption!");
     }
@@ -66,6 +71,11 @@ void CIFF::parseTags(std::istream &file, std::streampos end) {
 
     while (file.tellg() < end && !file.eof()) {
         std::getline(file, buffer, '\000');
+
+        if (!std::regex_match(buffer, std::regex("[ -~]+"))) {
+            throw BadFileFormatException("Non printable character in string!");
+        }
+
         tags.emplace_back(buffer);
     }
     if (file.tellg() > end || file.eof()) {

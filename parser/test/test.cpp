@@ -112,7 +112,7 @@ TEST_F(CAFFTest, TestParseCAFF) {
     EXPECT_EQ(caff.getDate().minute, 50);
 }
 
-TEST_F (CAFFTest /*test suite name*/, GeneratesFiles /*test name*/) {
+TEST_F (CAFFTest, TestGeneratesFiles) {
     fs::path caff_file_path = "res/1.caff";
     fs::path output_path = "res/out";
     CAFF caff(caff_file_path, output_path);
@@ -154,7 +154,7 @@ TEST_F(CAFFTest, TestBadStringsFile) {
                      }
                      catch (const BadFileFormatException &e) {
                          // and this tests that it has the correct message
-                         EXPECT_STREQ("Missing '\\0' or too long Tag section!", e.what());
+                         EXPECT_STREQ("Non printable character in string!", e.what());
                          throw;
                      }
                  }, BadFileFormatException);
@@ -177,6 +177,3 @@ TEST_F(CAFFTest, TestBadLengthFile) {
                      }
                  }, BadFileFormatException);
 }
-
-
-
