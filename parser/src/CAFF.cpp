@@ -30,6 +30,9 @@ void CAFF::parseCaff() {
         while (caffFile.peek() != EOF) {
             readFrame(caffFile);
         }
+        if (num_anim != ciff_list.size()) {
+            throw BadFileFormatException("Not num_anim count CIFF in the CAFF file");
+        }
     } else {
         throw BadFileFormatException("Can't open file!");
     }
