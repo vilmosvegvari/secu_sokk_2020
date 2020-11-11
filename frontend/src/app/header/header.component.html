@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Caff WebShop</a>
+  <a class="navbar-brand" routerLink="/pictures">Caff WebShop</a>
   <button
     class="navbar-toggler"
     type="button"
@@ -15,19 +15,26 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#"
-          >Home <span class="sr-only">(current)</span></a
+        <a class="nav-link" routerLink="/pictures"
+          >Home <span class="sr-only"></span
+        ></a>
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [ngClass]="{ disabled: !isAuthenticated }"
+          routerLink="/upload"
+          >Upload</a
         >
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Upload</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Admin</a>
+        <a class="nav-link" routerLink="/admin">Admin</a>
       </li>
     </ul>
-    <span class="navbar-text">
-      <a class="nav-link" href="#">Login</a>
+    <span class="navbar-nav">
+      <a class="nav-link" routerLink="/auth" (click)="onLogout()">
+        {{ isAuthenticated ? "Logout" : "Login" }}</a
+      >
     </span>
     <form class="form-inline my-2 my-lg-0">
       <input
