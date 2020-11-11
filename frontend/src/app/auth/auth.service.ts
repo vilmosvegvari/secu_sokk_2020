@@ -57,10 +57,10 @@ export class AuthService {
     this.user.next(loadedUser);
   }
 
-  login(email: string, password: string) {
+  login(username: string, password: string) {
     return this.http
       .post<AuthDataResponse>(environment.apiUrl + '/login', {
-        email: email,
+        username: username,
         password: password,
       })
       .pipe(
