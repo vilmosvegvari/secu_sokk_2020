@@ -1,1 +1,26 @@
-<p>admin works!</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Username</th>
+      <th scope="col">UserID</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <th scope="row">{{ users.indexOf(user) }}</th>
+      <td>{{ user.username }}</td>
+      <td>{{ user.userid }}</td>
+      <td>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="onDeleteUser(user.userid)"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
