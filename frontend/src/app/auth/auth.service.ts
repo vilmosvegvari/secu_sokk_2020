@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { BehaviorSubject } from 'rxjs';
 import { tap, timeout } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { User } from './user.model';
 
 export interface AuthDataResponse {
@@ -19,12 +20,9 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  urlStr = 'http://localhost:3000';
-
   signup(username: string, password: string) {
-    console.log(this.urlStr);
     return this.http
-      .post<AuthDataResponse>(this.urlStr + '/signup', {
+      .post<AuthDataResponse>(environment.apiUrl + '/signup', {
         username: username,
         password: password,
       })
@@ -61,7 +59,7 @@ export class AuthService {
 
   login(email: string, password: string) {
     return this.http
-      .post<AuthDataResponse>(this.urlStr + '/login', {
+      .post<AuthDataResponse>(environment.apiUrl + '/login', {
         email: email,
         password: password,
       })

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../auth/user.model';
 import { map, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 interface UserResponse {
   message: string;
@@ -14,7 +15,7 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   fetchUsers() {
-    return this.http.get<User[]>('http://localhost:8080/admin/list').pipe(
+    return this.http.get<User[]>(environment.apiUrl + '/admin/list').pipe(
       tap((users) => {
         this.users = users; //might need map later
       })
@@ -23,7 +24,7 @@ export class AdminService {
 
   deleteUser(userid) {
     return this.http
-      .delete<UserResponse>(`http://localhost:8080/admin/delete/{${userid}}`)
+      .delete<UserResponse>(environment.apiUrl + `/admin/delete/{${userid}}`)
       .subscribe((response) => {
         console.log(response);
       });
