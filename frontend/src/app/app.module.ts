@@ -9,6 +9,7 @@ import { PictureComponent } from './pictures/picture/picture.component';
 import { HeaderComponent } from './header/header.component';
 import { AdminComponent } from './admin/admin.component';
 import { UploadComponent } from './upload/upload.component';
+import { LoadingSpinnerComponent } from './shared/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -18,13 +19,11 @@ import { UploadComponent } from './upload/upload.component';
     PictureComponent,
     HeaderComponent,
     AdminComponent,
-    UploadComponent
+    UploadComponent,
+    LoadingSpinnerComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+  imports: [BrowserModule, AppRoutingModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
