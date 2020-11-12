@@ -7,8 +7,6 @@ CIFF::CIFF(int64_t file_size) : file_size(file_size) {}
 void CIFF::parseCiff(std::istream &file) {
     auto size = parseHeader(file);
     parseContent(file, size);
-
-    //TODO length check
 }
 
 int64_t CIFF::parseHeader(std::istream &file) {
@@ -39,6 +37,10 @@ int64_t CIFF::parseHeader(std::istream &file) {
     // Parse height
     height = readInt(file);
 
+    if (width < 0 || height < 0) {
+        throw BadFileFormatException("Width or height can't be negative");
+    }
+
     if ((width * height * 3) != content_size) {
         throw BadFileFormatException("width*height*3 not equal to content_size");
     }
@@ -62,11 +64,11 @@ void CIFF::parseCaption(std::istream &file, std::streampos end) {
 
     std::getline(file, buffer, '\n');
 
-    caption = convertString2Printable(buffer);
-
     if (file.tellg() > end || file.eof()) {
         throw BadFileFormatException("Missing '\\n' or too long Caption!");
     }
+
+    caption = convertString2Printable(buffer);
 }
 
 void CIFF::parseTags(std::istream &file, std::streampos end) {
@@ -75,11 +77,11 @@ void CIFF::parseTags(std::istream &file, std::streampos end) {
     while (file.tellg() < end && !file.eof()) {
         std::getline(file, buffer, '\000');
 
-        buffer = convertString2Printable(buffer);
-
         if (file.tellg() > end || file.eof()) {
             throw BadFileFormatException("Missing '\\0' or too long Tag section!");
         }
+
+        buffer = convertString2Printable(buffer);
 
         tags.emplace_back(buffer);
     }
@@ -94,11 +96,11 @@ json CIFF::generateJson() {
     return j;
 }
 
-size_t CIFF::getWidth() const {
+int64_t CIFF::getWidth() const {
     return width;
 }
 
-size_t CIFF::getHeight() const {
+int64_t CIFF::getHeight() const {
     return height;
 }
 

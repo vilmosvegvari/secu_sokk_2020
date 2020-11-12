@@ -40,6 +40,8 @@ private:
     std::string creator;
 
     bool isHeaderParsedAlready = false;
+    bool hasCredits = false;
+    bool hasAnimations = false;
 
     enum FrameID : unsigned char {
         HEADER = 1,
