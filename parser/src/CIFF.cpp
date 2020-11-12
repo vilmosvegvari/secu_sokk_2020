@@ -4,7 +4,7 @@
 
 CIFF::CIFF(int64_t file_size) : file_size(file_size) {}
 
-void CIFF::parseCiff(std::istream &file, int64_t length) {
+void CIFF::parseCiff(std::istream &file) {
     auto size = parseHeader(file);
     parseContent(file, size);
 
@@ -94,11 +94,11 @@ json CIFF::generateJson() {
     return j;
 }
 
-const size_t CIFF::getWidth() const {
+size_t CIFF::getWidth() const {
     return width;
 }
 
-const size_t CIFF::getHeight() const {
+size_t CIFF::getHeight() const {
     return height;
 }
 

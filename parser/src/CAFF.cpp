@@ -43,19 +43,27 @@ CAFF::FrameID CAFF::readFrame(std::istream &file) {
     if(isLengthTooLarge(length)){
         throw BadFileFormatException("Frame length is too big, frame id: " + std::to_string(frameId));
     }
+
+    // save frame start
+    auto frame_start = file.tellg();
+
     switch (frameId) {
         case HEADER:
             parseHeader(file, length);
             break;
         case CREDITS:
-            parseCredits(file, length);
+            parseCredits(file);
             break;
         case ANIMATION:
-            parseAnimation(file, length);
+            parseAnimation(file);
             break;
         default:
             throw BadFileFormatException("Not valid frame id: " + std::to_string(frameId));
     }
+
+    // check frame actual size equals length
+    checkFrameLength(file, frame_start, length);
+
     return frameId;
 }
 
@@ -87,7 +95,7 @@ void CAFF::parseHeader(std::istream &file, int64_t length) {
     isHeaderParsedAlready = true;
 }
 
-void CAFF::parseCredits(std::istream &file, int64_t length) {
+void CAFF::parseCredits(std::istream &file) {
     // Year
     date.year = readInt<int16_t>(file);
     // Month
@@ -107,18 +115,15 @@ void CAFF::parseCredits(std::istream &file, int64_t length) {
 
     // creator
     creator = readString(file, creator_len);
-
-    //TODO length check
-    
 }
 
-void CAFF::parseAnimation(std::istream &file, int64_t length) {
+void CAFF::parseAnimation(std::istream &file) {
     // Duration
     auto duration = readInt(file);
 
     // Parse CIFF
     CIFF ciff(file_size);
-    ciff.parseCiff(file, length);
+    ciff.parseCiff(file);
     ciff_list.emplace_back(duration, ciff);
 }
 

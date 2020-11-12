@@ -11,21 +11,21 @@ using json = nlohmann::json;
 
 class CIFF {
 public:
-    CIFF(int64_t file_size);
+    explicit CIFF(int64_t file_size);
 
-    void parseCiff(std::istream &file, int64_t length);
+    void parseCiff(std::istream &file);
 
     json generateJson();
 
-    const size_t getWidth() const;
+    [[nodiscard]] size_t getWidth() const;
 
-    const size_t getHeight() const;
+    [[nodiscard]] size_t getHeight() const;
 
-    const std::string &getCaption() const;
+    [[nodiscard]] const std::string &getCaption() const;
 
-    const std::vector<std::string> &getTags() const;
+    [[nodiscard]] const std::vector<std::string> &getTags() const;
 
-    const std::vector<unsigned char> &getPixels() const;
+    [[nodiscard]] const std::vector<unsigned char> &getPixels() const;
 
 private:
     size_t width = -1;
@@ -43,7 +43,7 @@ private:
 
     void parseTags(std::istream &file, std::streampos end);
 
-    bool isLengthTooLarge(int64_t length) const;
+    [[nodiscard]] bool isLengthTooLarge(int64_t length) const;
 };
 
 #endif //PARSER_CIFF_HPP

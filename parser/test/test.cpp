@@ -66,7 +66,7 @@ TEST_F(CAFFTest, TestParseCIFF) {
     caff_file.seekg(0x51);
 
     CIFF ciff(4002260);
-    ciff.parseCiff(caff_file, 0x1E881C);
+    ciff.parseCiff(caff_file);
 
     std::vector<std::string> expected_tags{"landscape", "sunset", "mountains"};
     EXPECT_EQ(ciff.getCaption(), "Beautiful scenery");
@@ -83,7 +83,7 @@ TEST_F(CAFFTest, TestGenerateJSONFromCIFF) {
     caff_file.seekg(0x51);
 
     CIFF ciff(4002260);
-    ciff.parseCiff(caff_file, 0x1E881C);
+    ciff.parseCiff(caff_file);
     json out = ciff.generateJson();
 
     std::vector<std::string> expected_tags{"landscape", "sunset", "mountains"};
