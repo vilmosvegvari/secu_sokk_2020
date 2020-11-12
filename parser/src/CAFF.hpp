@@ -23,11 +23,11 @@ public:
 
     void generateFiles();
 
-    int64_t getNumAnim() const;
+    [[nodiscard]] int64_t getNumAnim() const;
 
-    const Date &getDate() const;
+    [[nodiscard]] const Date &getDate() const;
 
-    const std::string &getCreator() const;
+    [[nodiscard]] const std::string &getCreator() const;
 
 private:
     const fs::path file_path;
@@ -53,9 +53,9 @@ private:
 
     void parseHeader(std::istream &file, int64_t length);
 
-    void parseCredits(std::istream &file, int64_t length);
+    void parseCredits(std::istream &file);
 
-    void parseAnimation(std::istream &file, int64_t length);
+    void parseAnimation(std::istream &file);
 
     void generateJson();
 
@@ -63,7 +63,7 @@ private:
 
     void verifyOutputPath();
 
-    bool isLengthTooLarge(int64_t length) const;
+    [[nodiscard]] bool isLengthTooLarge(int64_t length) const;
 };
 
 #endif //PARSER_CAFF_HPP

@@ -2,10 +2,13 @@
 #include <sstream>
 #include "CIFF.hpp"
 
+CIFF::CIFF(int64_t file_size) : file_size(file_size) {}
 
-void CIFF::parseCiff(std::istream &file, int64_t length) {
+void CIFF::parseCiff(std::istream &file) {
     auto size = parseHeader(file);
     parseContent(file, size);
+
+    //TODO length check
 }
 
 int64_t CIFF::parseHeader(std::istream &file) {
@@ -18,7 +21,7 @@ int64_t CIFF::parseHeader(std::istream &file) {
 
     // Parse header_size
     const auto header_size = readInt(file);
-    if(isLengthTooLarge(header_size)){
+    if (isLengthTooLarge(header_size)) {
         throw BadFileFormatException("CIFF header_size is too big");
     }
 
@@ -26,7 +29,7 @@ int64_t CIFF::parseHeader(std::istream &file) {
 
     // Parse content_size
     const auto content_size = readInt(file);
-    if(isLengthTooLarge(header_size)){
+    if (isLengthTooLarge(content_size)) {
         throw BadFileFormatException("CIFF content_size is too big");
     }
 
@@ -55,9 +58,14 @@ void CIFF::parseContent(std::istream &file, int64_t size) {
 }
 
 void CIFF::parseCaption(std::istream &file, std::streampos end) {
-    std::getline(file, caption, '\n');
+    std::string buffer;
+
+    std::getline(file, buffer, '\n');
+
+    caption = convertString2Printable(buffer);
+
     if (file.tellg() > end || file.eof()) {
-        throw  BadFileFormatException("Missing '\\n' or too long Caption!");
+        throw BadFileFormatException("Missing '\\n' or too long Caption!");
     }
 }
 
@@ -66,12 +74,15 @@ void CIFF::parseTags(std::istream &file, std::streampos end) {
 
     while (file.tellg() < end && !file.eof()) {
         std::getline(file, buffer, '\000');
+
+        buffer = convertString2Printable(buffer);
+
+        if (file.tellg() > end || file.eof()) {
+            throw BadFileFormatException("Missing '\\0' or too long Tag section!");
+        }
+
         tags.emplace_back(buffer);
     }
-    if (file.tellg() > end || file.eof()) {
-        throw  BadFileFormatException("Missing '\\0' or too long Tag section!");
-    }
-
 }
 
 json CIFF::generateJson() {
@@ -83,11 +94,11 @@ json CIFF::generateJson() {
     return j;
 }
 
-long CIFF::getWidth() const {
+size_t CIFF::getWidth() const {
     return width;
 }
 
-long CIFF::getHeight() const {
+size_t CIFF::getHeight() const {
     return height;
 }
 
@@ -101,10 +112,6 @@ const std::vector<std::string> &CIFF::getTags() const {
 
 const std::vector<unsigned char> &CIFF::getPixels() const {
     return pixels;
-}
-
-void CIFF::setFileSize(uintmax_t fileSize) {
-    file_size = fileSize;
 }
 
 bool CIFF::isLengthTooLarge(int64_t length) const {

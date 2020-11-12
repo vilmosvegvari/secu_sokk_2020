@@ -65,9 +65,8 @@ TEST_F(CAFFTest, TestParseCIFF) {
 
     caff_file.seekg(0x51);
 
-    CIFF ciff;
-    ciff.setFileSize(4002260);
-    ciff.parseCiff(caff_file, 0x1E881C);
+    CIFF ciff(4002260);
+    ciff.parseCiff(caff_file);
 
     std::vector<std::string> expected_tags{"landscape", "sunset", "mountains"};
     EXPECT_EQ(ciff.getCaption(), "Beautiful scenery");
@@ -83,9 +82,8 @@ TEST_F(CAFFTest, TestGenerateJSONFromCIFF) {
 
     caff_file.seekg(0x51);
 
-    CIFF ciff;
-    ciff.setFileSize(4002260);
-    ciff.parseCiff(caff_file, 0x1E881C);
+    CIFF ciff(4002260);
+    ciff.parseCiff(caff_file);
     json out = ciff.generateJson();
 
     std::vector<std::string> expected_tags{"landscape", "sunset", "mountains"};
@@ -112,7 +110,7 @@ TEST_F(CAFFTest, TestParseCAFF) {
     EXPECT_EQ(caff.getDate().minute, 50);
 }
 
-TEST_F (CAFFTest /*test suite name*/, GeneratesFiles /*test name*/) {
+TEST_F (CAFFTest, TestGeneratesFiles) {
     fs::path caff_file_path = "res/1.caff";
     fs::path output_path = "res/out";
     CAFF caff(caff_file_path, output_path);
@@ -121,6 +119,7 @@ TEST_F (CAFFTest /*test suite name*/, GeneratesFiles /*test name*/) {
 
     ASSERT_FALSE(fs::is_empty(output_path));
     ASSERT_TRUE(CAFFTest::compareFiles("res/expected/1.gif", "res/out/1.gif"));
+    ASSERT_TRUE(CAFFTest::compareFiles("res/expected/1.png", "res/out/1.png"));
     ASSERT_TRUE(CAFFTest::compareJson("res/expected/1.json", "res/out/1.json"));
 }
 
@@ -177,6 +176,3 @@ TEST_F(CAFFTest, TestBadLengthFile) {
                      }
                  }, BadFileFormatException);
 }
-
-
-

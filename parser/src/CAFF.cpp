@@ -1,8 +1,6 @@
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
-#include <stdexcept>
 
 #include "CAFF.hpp"
 
@@ -30,6 +28,9 @@ void CAFF::parseCaff() {
         while (caffFile.peek() != EOF) {
             readFrame(caffFile);
         }
+        if (num_anim != ciff_list.size()) {
+            throw BadFileFormatException("Not num_anim count CIFF in the CAFF file");
+        }
     } else {
         throw BadFileFormatException("Can't open file!");
     }
@@ -42,19 +43,27 @@ CAFF::FrameID CAFF::readFrame(std::istream &file) {
     if(isLengthTooLarge(length)){
         throw BadFileFormatException("Frame length is too big, frame id: " + std::to_string(frameId));
     }
+
+    // save frame start
+    auto frame_start = file.tellg();
+
     switch (frameId) {
         case HEADER:
             parseHeader(file, length);
             break;
         case CREDITS:
-            parseCredits(file, length);
+            parseCredits(file);
             break;
         case ANIMATION:
-            parseAnimation(file, length);
+            parseAnimation(file);
             break;
         default:
             throw BadFileFormatException("Not valid frame id: " + std::to_string(frameId));
     }
+
+    // check frame actual size equals length
+    checkFrameLength(file, frame_start, length);
+
     return frameId;
 }
 
@@ -86,7 +95,7 @@ void CAFF::parseHeader(std::istream &file, int64_t length) {
     isHeaderParsedAlready = true;
 }
 
-void CAFF::parseCredits(std::istream &file, int64_t length) {
+void CAFF::parseCredits(std::istream &file) {
     // Year
     date.year = readInt<int16_t>(file);
     // Month
@@ -106,17 +115,15 @@ void CAFF::parseCredits(std::istream &file, int64_t length) {
 
     // creator
     creator = readString(file, creator_len);
-    
 }
 
-void CAFF::parseAnimation(std::istream &file, int64_t length) {
+void CAFF::parseAnimation(std::istream &file) {
     // Duration
     auto duration = readInt(file);
 
     // Parse CIFF
-    CIFF ciff;
-    ciff.setFileSize(file_size);
-    ciff.parseCiff(file, length);
+    CIFF ciff(file_size);
+    ciff.parseCiff(file);
     ciff_list.emplace_back(duration, ciff);
 }
 
@@ -149,11 +156,16 @@ void CAFF::generateImage() {
     for (auto &i : ciff_list) {
         auto ciff = std::get<1>(i);
         Magick::Image image(ciff.getWidth(), ciff.getHeight(), "RGB", MagickCore::CharPixel, ciff.getPixels().data());
-        image.animationDelay(std::get<0>(i) / 10);
+        image.animationDelay(static_cast<const size_t>(std::get<0>(i) / 10));
         frames.emplace_back(image);
     }
+
+    // generate gif
     Magick::writeImages(frames.begin(), frames.end(),
                         output_path / file_path.filename().replace_extension(".gif"));
+
+    //generate png
+    frames[0].write(output_path / file_path.filename().replace_extension(".png"));
 }
 
 void CAFF::verifyOutputPath() {

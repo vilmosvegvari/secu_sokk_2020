@@ -13,13 +13,16 @@ int main(int argc, char *argv[]) {
     }
 
     int c;
-    while ((c = getopt(argc, argv, "f:o:")) != -1) {
+    while ((c = getopt(argc, argv, "f:o:t")) != -1) {
         switch (c) {
             case 'f':
                 caff_file_path = optarg;
                 continue;
             case 'o':
                 output_path = optarg;
+                continue;
+            case 't':
+                std::cin >> caff_file_path;
                 continue;
             default:
                 std::cerr << "Unknown parameter" << c;
@@ -32,7 +35,8 @@ int main(int argc, char *argv[]) {
         caff.parseCaff();
         caff.generateFiles();
     } catch (BadFileFormatException &e) {
-        std::cout << "Bad file format!: " << e.what();
+        std::cerr << "Bad file format!: " << e.what();
+        return -1;
     }
     return 0;
 }
