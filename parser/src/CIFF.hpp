@@ -11,13 +11,15 @@ using json = nlohmann::json;
 
 class CIFF {
 public:
+    CIFF(int64_t file_size);
+
     void parseCiff(std::istream &file, int64_t length);
 
     json generateJson();
 
-    long getWidth() const;
+    const size_t getWidth() const;
 
-    long getHeight() const;
+    const size_t getHeight() const;
 
     const std::string &getCaption() const;
 
@@ -26,16 +28,12 @@ public:
     const std::vector<unsigned char> &getPixels() const;
 
 private:
-    long width = -1;
-    long height = -1;
+    size_t width = -1;
+    size_t height = -1;
     std::string caption;
     std::vector<std::string> tags;
     std::vector<unsigned char> pixels;
-    uintmax_t file_size = 0;
-public:
-    void setFileSize(uintmax_t fileSize);
-
-private:
+    int64_t file_size = 0;
 
     int64_t parseHeader(std::istream &file);
 

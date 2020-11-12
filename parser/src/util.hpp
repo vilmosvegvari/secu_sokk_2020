@@ -21,7 +21,7 @@ public:
 };
 
 template<class T = int64_t>
-T readInt(std::istream &file) {
+inline T readInt(std::istream &file) {
     T number;
     file.read(reinterpret_cast<char *>(&number), sizeof(T));
     if (file.fail()) {
@@ -39,12 +39,14 @@ static std::vector<char> readData(std::istream &file, int64_t length){
     return data;
 }
 
+inline std::string convertString2Printable(const std::string &str) {
+    return std::regex_replace(str, std::regex("[^ -~]+"), "");
+}
+
 static std::string readString(std::istream &file, int64_t length){
     auto data = readData(file, length);
     auto str = std::string(data.begin(), data.end());
-    if (!std::regex_match(str, std::regex("[ -~]+"))) {
-        throw BadFileFormatException("Non printable character in string!");
-    }
+    str = convertString2Printable(str);
     return str;
 }
 

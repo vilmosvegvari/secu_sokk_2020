@@ -65,8 +65,7 @@ TEST_F(CAFFTest, TestParseCIFF) {
 
     caff_file.seekg(0x51);
 
-    CIFF ciff;
-    ciff.setFileSize(4002260);
+    CIFF ciff(4002260);
     ciff.parseCiff(caff_file, 0x1E881C);
 
     std::vector<std::string> expected_tags{"landscape", "sunset", "mountains"};
@@ -83,8 +82,7 @@ TEST_F(CAFFTest, TestGenerateJSONFromCIFF) {
 
     caff_file.seekg(0x51);
 
-    CIFF ciff;
-    ciff.setFileSize(4002260);
+    CIFF ciff(4002260);
     ciff.parseCiff(caff_file, 0x1E881C);
     json out = ciff.generateJson();
 
@@ -154,7 +152,7 @@ TEST_F(CAFFTest, TestBadStringsFile) {
                      }
                      catch (const BadFileFormatException &e) {
                          // and this tests that it has the correct message
-                         EXPECT_STREQ("Non printable character in string!", e.what());
+                         EXPECT_STREQ("Missing '\\0' or too long Tag section!", e.what());
                          throw;
                      }
                  }, BadFileFormatException);

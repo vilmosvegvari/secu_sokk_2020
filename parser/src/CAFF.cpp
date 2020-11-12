@@ -1,8 +1,6 @@
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
-#include <stdexcept>
 
 #include "CAFF.hpp"
 
@@ -109,6 +107,8 @@ void CAFF::parseCredits(std::istream &file, int64_t length) {
 
     // creator
     creator = readString(file, creator_len);
+
+    //TODO length check
     
 }
 
@@ -117,8 +117,7 @@ void CAFF::parseAnimation(std::istream &file, int64_t length) {
     auto duration = readInt(file);
 
     // Parse CIFF
-    CIFF ciff;
-    ciff.setFileSize(file_size);
+    CIFF ciff(file_size);
     ciff.parseCiff(file, length);
     ciff_list.emplace_back(duration, ciff);
 }
@@ -152,7 +151,7 @@ void CAFF::generateImage() {
     for (auto &i : ciff_list) {
         auto ciff = std::get<1>(i);
         Magick::Image image(ciff.getWidth(), ciff.getHeight(), "RGB", MagickCore::CharPixel, ciff.getPixels().data());
-        image.animationDelay(std::get<0>(i) / 10);
+        image.animationDelay(static_cast<const size_t>(std::get<0>(i) / 10));
         frames.emplace_back(image);
     }
     Magick::writeImages(frames.begin(), frames.end(),
