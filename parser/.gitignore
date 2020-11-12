@@ -33,3 +33,7 @@ cmake-build-*/
 *.exe
 *.out
 *.app
+
+
+# Custom
+out/
