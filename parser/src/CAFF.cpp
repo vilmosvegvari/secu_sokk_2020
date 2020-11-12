@@ -159,8 +159,13 @@ void CAFF::generateImage() {
         image.animationDelay(static_cast<const size_t>(std::get<0>(i) / 10));
         frames.emplace_back(image);
     }
+
+    // generate gif
     Magick::writeImages(frames.begin(), frames.end(),
                         output_path / file_path.filename().replace_extension(".gif"));
+
+    //generate png
+    frames[0].write(output_path / file_path.filename().replace_extension(".png"));
 }
 
 void CAFF::verifyOutputPath() {

@@ -119,6 +119,7 @@ TEST_F (CAFFTest, TestGeneratesFiles) {
 
     ASSERT_FALSE(fs::is_empty(output_path));
     ASSERT_TRUE(CAFFTest::compareFiles("res/expected/1.gif", "res/out/1.gif"));
+    ASSERT_TRUE(CAFFTest::compareFiles("res/expected/1.png", "res/out/1.png"));
     ASSERT_TRUE(CAFFTest::compareJson("res/expected/1.json", "res/out/1.json"));
 }
 
