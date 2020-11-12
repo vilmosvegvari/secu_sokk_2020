@@ -35,6 +35,10 @@ void CAFF::parseCaff() {
         throw BadFileFormatException("Can't open file!");
     }
     caffFile.close();
+
+    if (!hasCredits || !hasAnimations) {
+        throw BadFileFormatException("CAFF does not contains all the necessary frames!");
+    }
 }
 
 CAFF::FrameID CAFF::readFrame(std::istream &file) {
@@ -115,16 +119,23 @@ void CAFF::parseCredits(std::istream &file) {
 
     // creator
     creator = readString(file, creator_len);
+
+    hasCredits = true;
 }
 
 void CAFF::parseAnimation(std::istream &file) {
     // Duration
-    auto duration = readInt(file);
+    int64_t duration = readInt(file);
+    if (duration < 0) {
+        throw BadFileFormatException("Duration cant be negative!");
+    }
 
     // Parse CIFF
     CIFF ciff(file_size);
     ciff.parseCiff(file);
     ciff_list.emplace_back(duration, ciff);
+
+    hasAnimations = true;
 }
 
 void CAFF::generateFiles() {
@@ -155,9 +166,12 @@ void CAFF::generateImage() {
     std::vector<Magick::Image> frames;
     for (auto &i : ciff_list) {
         auto ciff = std::get<1>(i);
-        Magick::Image image(ciff.getWidth(), ciff.getHeight(), "RGB", MagickCore::CharPixel, ciff.getPixels().data());
-        image.animationDelay(static_cast<const size_t>(std::get<0>(i) / 10));
-        frames.emplace_back(image);
+        if (!ciff.getPixels().empty()) {
+            Magick::Image image(static_cast<const size_t>(ciff.getWidth()), static_cast<const size_t>(ciff.getHeight()),
+                                "RGB", MagickCore::CharPixel, ciff.getPixels().data());
+            image.animationDelay(static_cast<const size_t>(std::get<0>(i) / 10));
+            frames.emplace_back(image);
+        }
     }
 
     // generate gif
@@ -165,7 +179,9 @@ void CAFF::generateImage() {
                         output_path / file_path.filename().replace_extension(".gif"));
 
     //generate png
-    frames[0].write(output_path / file_path.filename().replace_extension(".png"));
+    if (!frames.empty()) {
+        frames[0].write(output_path / file_path.filename().replace_extension(".png"));
+    }
 }
 
 void CAFF::verifyOutputPath() {

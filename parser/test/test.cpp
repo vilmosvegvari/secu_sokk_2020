@@ -135,7 +135,7 @@ TEST_F(CAFFTest, TestBigFile) {
                      }
                      catch (const BadFileFormatException &e) {
                          // and this tests that it has the correct message
-                         EXPECT_STREQ("Frame length is too big, frame id: 29", e.what());
+                         EXPECT_STREQ("Frame length is too big, frame id: 1", e.what());
                          throw;
                      }
                  }, BadFileFormatException);

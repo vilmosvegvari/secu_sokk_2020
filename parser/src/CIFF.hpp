@@ -17,9 +17,9 @@ public:
 
     json generateJson();
 
-    [[nodiscard]] size_t getWidth() const;
+    [[nodiscard]] int64_t getWidth() const;
 
-    [[nodiscard]] size_t getHeight() const;
+    [[nodiscard]] int64_t getHeight() const;
 
     [[nodiscard]] const std::string &getCaption() const;
 
@@ -28,8 +28,8 @@ public:
     [[nodiscard]] const std::vector<unsigned char> &getPixels() const;
 
 private:
-    size_t width = -1;
-    size_t height = -1;
+    int64_t width = -1;
+    int64_t height = -1;
     std::string caption;
     std::vector<std::string> tags;
     std::vector<unsigned char> pixels;
@@ -39,7 +39,7 @@ private:
 
     void parseContent(std::istream &file, int64_t size);
 
-    void parseCaption(std::istream &file , std::streampos end);
+    void parseCaption(std::istream &file, std::streampos end);
 
     void parseTags(std::istream &file, std::streampos end);
 
