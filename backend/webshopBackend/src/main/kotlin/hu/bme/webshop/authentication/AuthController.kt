@@ -18,8 +18,6 @@ import javax.validation.Valid
 class AuthController(
 	val authService: AuthService
 ) {
-
-
 	@PostMapping("/login")
 	fun authenticateUser(@RequestBody loginRequest: @Valid LoginRequest?): ResponseEntity<*> {
 		return ResponseEntity.ok(authService.authenticateUser(loginRequest))
@@ -32,6 +30,9 @@ class AuthController(
 			val newUser: User = authService.registerUser(signUpRequest)
 			signupResponse.user = newUser
 			signupResponse.message = "User registered successfully"
+			val loginRequest = LoginRequest(signUpRequest!!.username, signUpRequest.password)
+			val loginResponse = authService.authenticateUser(loginRequest)
+			signupResponse.token = loginResponse.accessToken
  			ResponseEntity.ok(signupResponse)
 		} catch (e: Exception) {
 			signupResponse.message = e.message!!

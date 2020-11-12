@@ -71,7 +71,7 @@ class AuthService(
 		}
 
 		val user = User(
-			signUpRequest.username!!,
+			signUpRequest.username,
 			encoder!!.encode(signUpRequest.password)
 		)
 

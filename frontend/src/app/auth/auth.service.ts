@@ -22,7 +22,7 @@ export class AuthService {
 
   signup(username: string, password: string) {
     return this.http
-      .post<AuthDataResponse>(environment.apiUrl + '/signup', {
+      .post<AuthDataResponse>(environment.apiUrl + '/auth/signup', {
         username: username,
         password: password,
       })
@@ -59,7 +59,7 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http
-      .post<AuthDataResponse>(environment.apiUrl + '/login', {
+      .post<AuthDataResponse>(environment.apiUrl + '/auth/login', {
         username: username,
         password: password,
       })

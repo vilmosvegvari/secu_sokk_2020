@@ -13,6 +13,8 @@ class User(
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	var id: Long = 0
 
+	var isDeleted: Boolean = false
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 		name = "user_roles",
