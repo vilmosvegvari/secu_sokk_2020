@@ -16,7 +16,7 @@ export class AdminService {
 
   fetchUsers() {
     return this.http
-      .get<User[]>(environment.apiUrl + '/admin/user/list')
+      .get<User[]>(environment.apiUrl + '/admin/list')
       .subscribe((users) => {
         console.log('users', users);
         this.users = users; //might need map later
