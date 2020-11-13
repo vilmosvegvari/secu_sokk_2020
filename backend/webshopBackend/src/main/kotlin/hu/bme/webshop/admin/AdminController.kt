@@ -10,7 +10,7 @@ import java.net.http.HttpResponse
 @RequestMapping("/api/admin")
 class AdminController(val adminService: AdminService) {
 
-	@GetMapping("/user/all")
+	@GetMapping("/list")
 	@PreAuthorize("hasRole('ADMIN')")
 	fun all(): List<User> {
 		return adminService.findAll()
@@ -22,7 +22,7 @@ class AdminController(val adminService: AdminService) {
 		return adminService.findById(id)
 	}
 
-	@DeleteMapping("/user/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	fun deleteById(@PathVariable(value = "id") id: Long): ResponseEntity<*> {
 		adminService.delete(id)
