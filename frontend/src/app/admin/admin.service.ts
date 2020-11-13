@@ -15,11 +15,12 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   fetchUsers() {
-    return this.http.get<User[]>(environment.apiUrl + '/admin/list').pipe(
-      tap((users) => {
+    return this.http
+      .get<User[]>(environment.apiUrl + '/admin/user/all')
+      .subscribe((users) => {
+        console.log('users', users);
         this.users = users; //might need map later
-      })
-    );
+      });
   }
 
   deleteUser(userid) {

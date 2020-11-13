@@ -13,7 +13,15 @@ export class AdminComponent implements OnInit {
   ];
   constructor(private adminService: AdminService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.adminService.fetchUsers();
+    this.users = this.adminService.users;
+  }
+
+  fetchUsers() {
+    this.adminService.fetchUsers();
+    this.users = this.adminService.users;
+  }
 
   onDeleteUser(userid) {
     this.adminService.deleteUser(userid);
