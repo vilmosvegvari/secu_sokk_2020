@@ -7,10 +7,8 @@ import { AdminService } from './admin.service';
   styleUrls: ['./admin.component.css'],
 })
 export class AdminComponent implements OnInit {
-  users = [
-    { username: 'user123', userid: '123asd123' },
-    { username: 'this is hardcoded', userid: 'youneedtochangeitlater' },
-  ];
+  users = [];
+
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {

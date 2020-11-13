@@ -5,6 +5,10 @@ import { map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 interface UserResponse {
+  username: string;
+  id: number;
+  isDeleted: boolean;
+  roles: [{ id: number; name: string }];
   message: string;
 }
 
@@ -15,17 +19,30 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   fetchUsers() {
+    console.log('fetching');
     return this.http
-      .get<User[]>(environment.apiUrl + '/admin/list')
-      .subscribe((users) => {
-        console.log('users', users);
-        this.users = users; //might need map later
-      });
+      .get<UserResponse[]>(environment.apiUrl + '/admin/list')
+      .pipe(
+        map((users) => {
+          return users.map((user) => {
+            return {
+              username: user.username,
+              userid: user.id,
+              isAdmin: user.roles[0].name === 'ROLE_ADMIN' ? true : false,
+              isDeleted: user.isDeleted,
+            };
+          });
+        }),
+        tap((users) => {
+          this.users = users;
+        })
+      )
+      .subscribe();
   }
 
   deleteUser(userid) {
     return this.http
-      .delete<UserResponse>(environment.apiUrl + `/admin/delete/{${userid}}`)
+      .delete<UserResponse>(environment.apiUrl + `/admin/delete/${userid}`)
       .subscribe((response) => {
         console.log(response);
       });

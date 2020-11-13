@@ -5,6 +5,8 @@
       <th scope="col">#</th>
       <th scope="col">Username</th>
       <th scope="col">UserID</th>
+      <th scope="col">Deleted</th>
+      <th scope="col">Admin</th>
       <th scope="col">Action</th>
     </tr>
   </thead>
@@ -13,6 +15,8 @@
       <th scope="row">{{ users.indexOf(user) }}</th>
       <td>{{ user.username }}</td>
       <td>{{ user.userid }}</td>
+      <td>{{ user.isDeleted }}</td>
+      <td>{{ user.isAdmin }}</td>
       <td>
         <button
           type="button"
