@@ -7,7 +7,7 @@ import { PicturesComponent } from './pictures/pictures.component';
 import { UploadComponent } from './upload/upload.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/auth', pathMatch: 'full' },
+  { path: '', redirectTo: '/pictures', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent },
   { path: 'pictures', component: PicturesComponent, canActivate: [AuthGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [AuthGuard] },
