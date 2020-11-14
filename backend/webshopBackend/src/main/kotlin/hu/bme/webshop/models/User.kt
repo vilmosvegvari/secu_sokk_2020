@@ -1,6 +1,7 @@
 package hu.bme.webshop.models
 
 import hu.bme.webshop.models.Role
+import hu.bme.webshop.user.dto.UserResponse
 import javax.persistence.*
 
 @Entity(name = "User")
@@ -29,5 +30,15 @@ class User(
 
 	fun setRoles(roles: Set<Role>) {
 		this.roles = roles
+	}
+
+	fun toUserResponse(): UserResponse {
+		val isAdmin = roles.any { it.getName()!! == ERole.ROLE_ADMIN }
+		return UserResponse(
+			id = id,
+			isAdmin = isAdmin,
+			username = username,
+			isDeleted = isDeleted
+		)
 	}
 }

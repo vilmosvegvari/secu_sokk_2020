@@ -5,10 +5,12 @@ import hu.bme.webshop.authentication.dto.request.LoginRequest
 import hu.bme.webshop.authentication.dto.request.RolesRequest
 import hu.bme.webshop.authentication.dto.request.SignupRequest
 import hu.bme.webshop.authentication.dto.request.SignupResponse
+import hu.bme.webshop.authentication.dto.response.AuthResponse
 import hu.bme.webshop.authentication.dto.response.MessageResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.net.http.HttpResponse
 import javax.validation.Valid
 
 
@@ -20,23 +22,19 @@ class AuthController(
 ) {
 	@PostMapping("/login")
 	fun authenticateUser(@RequestBody loginRequest: @Valid LoginRequest?): ResponseEntity<*> {
-		return ResponseEntity.ok(authService.authenticateUser(loginRequest))
+		return try {
+			ResponseEntity.ok(authService.authenticateUser(loginRequest))
+		} catch (e: Exception) {
+			ResponseEntity.badRequest().body(MessageResponse(e.message!!))
+		}
 	}
 
 	@PostMapping("/signup")
 	fun registerUser(@RequestBody signUpRequest: @Valid SignupRequest?): ResponseEntity<*> {
-		val signupResponse =  SignupResponse()
 		return try {
-			val newUser: User = authService.registerUser(signUpRequest)
-			signupResponse.user = newUser
-			signupResponse.message = "User registered successfully"
-			val loginRequest = LoginRequest(signUpRequest!!.username, signUpRequest.password)
-			val loginResponse = authService.authenticateUser(loginRequest)
-			signupResponse.token = loginResponse.accessToken
- 			ResponseEntity.ok(signupResponse)
+			ResponseEntity.ok(authService.registerUser(signUpRequest))
 		} catch (e: Exception) {
-			signupResponse.message = e.message!!
-			ResponseEntity.badRequest().body(signupResponse)
+			ResponseEntity.badRequest().body(MessageResponse(e.message!!))
 		}
 	}
 
