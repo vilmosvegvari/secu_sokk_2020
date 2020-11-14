@@ -51,10 +51,12 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
 	@Throws(Exception::class)
 	override fun configure(http: HttpSecurity) {
+		http.headers().frameOptions().sameOrigin() //TODO: remove in prod
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
+				.antMatchers("/h2-console/**").permitAll() //TODO: remove in prod
 			.anyRequest().authenticated()
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
 	}

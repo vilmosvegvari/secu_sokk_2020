@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.net.http.HttpResponse
 
+@CrossOrigin(origins =["http://localhost:4200"])
 @RestController
 @RequestMapping("/api/admin")
 class AdminController(val adminService: AdminService) {
