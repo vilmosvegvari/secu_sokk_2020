@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/23fb51b7-241f-4186-b7b5-d2345a949328/deploy-status)](https://app.netlify.com/sites/secu-sokk/deploys)
+
 # Frontend
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.0.
