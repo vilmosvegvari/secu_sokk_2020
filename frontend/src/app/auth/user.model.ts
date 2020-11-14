@@ -3,7 +3,8 @@ export class User {
   constructor(
     public username: string,
     public id: string,
-    private _token: string
+    private _token: string,
+    public isAdmin: boolean
   ) {}
 
   get token() {

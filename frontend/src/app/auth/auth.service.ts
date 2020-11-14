@@ -11,7 +11,8 @@ export interface AuthDataResponse {
   username: string;
   token: string;
   id: string;
-  errorMessage: string;
+  isAdmin: boolean;
+  errorMessage?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -32,7 +33,8 @@ export class AuthService {
           this.handleAuthentication(
             resData.username,
             resData.id,
-            resData.token
+            resData.token,
+            resData.isAdmin
           );
         })
       );
@@ -43,6 +45,7 @@ export class AuthService {
       username: string;
       id: string;
       _token: string;
+      isAdmin: boolean;
     } = JSON.parse(localStorage.getItem('userData'));
 
     if (!userData) {
@@ -52,7 +55,8 @@ export class AuthService {
     const loadedUser = new User(
       userData.username,
       userData.id,
-      userData._token
+      userData._token,
+      userData.isAdmin
     );
     this.user.next(loadedUser);
   }
@@ -69,7 +73,8 @@ export class AuthService {
           this.handleAuthentication(
             resData.username,
             resData.id,
-            resData.token
+            resData.token,
+            resData.isAdmin
           );
         })
       );
@@ -81,8 +86,13 @@ export class AuthService {
     this.router.navigate(['/auth']);
   }
 
-  private handleAuthentication(username: string, id: string, token: string) {
-    const user = new User(username, id, token);
+  private handleAuthentication(
+    username: string,
+    id: string,
+    token: string,
+    isAdmin: boolean
+  ) {
+    const user = new User(username, id, token, isAdmin);
     this.user.next(user);
     localStorage.setItem('userData', JSON.stringify(user));
   }
