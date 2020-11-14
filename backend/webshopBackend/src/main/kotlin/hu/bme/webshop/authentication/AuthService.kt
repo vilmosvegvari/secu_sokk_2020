@@ -7,7 +7,7 @@ import hu.bme.webshop.models.User
 import hu.bme.webshop.authentication.dto.request.LoginRequest
 import hu.bme.webshop.authentication.dto.request.RolesRequest
 import hu.bme.webshop.authentication.dto.request.SignupRequest
-import hu.bme.webshop.authentication.dto.response.JwtResponse
+import hu.bme.webshop.authentication.dto.response.AuthResponse
 import hu.bme.webshop.security.jwt.JwtUtils
 import hu.bme.webshop.security.services.UserDetailsImpl
 import hu.bme.webshop.security.services.UserDetailsProvider
@@ -44,27 +44,29 @@ class AuthService(
 	@Autowired
 	var encoder: PasswordEncoder? = null
 
-	fun authenticateUser(loginRequest: LoginRequest?): JwtResponse {
+	fun authenticateUser(loginRequest: LoginRequest?): AuthResponse {
 		val authentication = authenticationManager!!.authenticate(
 			UsernamePasswordAuthenticationToken(loginRequest!!.username, loginRequest.password)
 		)
 		SecurityContextHolder.getContext().authentication = authentication
-		val jwt = jwtUtils!!.generateJwtToken(authentication)
+		val token = jwtUtils!!.generateJwtToken(authentication)
+		val jwt = token.first
 		val userDetails = authentication.principal as UserDetailsImpl
-		val roles = userDetails.authorities.stream()
+		val isAdmin = userDetails.authorities.stream()
 			.map { item: GrantedAuthority -> item.authority }
-			.collect(Collectors.toList())
+			.collect(Collectors.toList()).contains("ROLE_ADMIN")
 
 		logger.info("UserId ${userDetails.id} logged in")
-		return JwtResponse(
+		return AuthResponse(
 			jwt,
 			userDetails.id,
 			userDetails.username,
-			roles
+			isAdmin,
+			token.second
 		)
 	}
 
-	fun registerUser(signUpRequest: SignupRequest?): User {
+	fun registerUser(signUpRequest: SignupRequest?): AuthResponse {
 		if (userRepository!!.existsByUsername(signUpRequest!!.username)!!) {
 			logger.info("Error: Username ${signUpRequest.username} is already taken!")
 			throw IllegalArgumentException("Error: Username is already taken!")
@@ -85,7 +87,8 @@ class AuthService(
 		user.setRoles(roles)
 		val dbUser = userRepository!!.save(user)
 		logger.info("UserId ${dbUser.id} is registered")
-		return user
+
+		return this.authenticateUser(LoginRequest(signUpRequest.username, signUpRequest.password))
 	}
 
 	fun setAdmin(id: Long, rolesRequest: RolesRequest?) {

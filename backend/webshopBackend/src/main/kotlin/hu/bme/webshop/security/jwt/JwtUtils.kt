@@ -16,14 +16,15 @@ class JwtUtils {
 
 	@Value("\${webshop.app.jwtExpirationMs}")
 	private val jwtExpirationMs = 0
-	fun generateJwtToken(authentication: Authentication): String {
+	fun generateJwtToken(authentication: Authentication): Pair<String, Date> {
 		val userPrincipal = authentication.principal as UserDetailsImpl
-		return Jwts.builder()
+		val expirationDate = Date(Date().time + jwtExpirationMs)
+		return Pair<String, Date>(Jwts.builder()
 			.setSubject(userPrincipal.username)
 			.setIssuedAt(Date())
-			.setExpiration(Date(Date().time + jwtExpirationMs))
+			.setExpiration(expirationDate)
 			.signWith(SignatureAlgorithm.HS512, jwtSecret)
-			.compact()
+			.compact(), expirationDate)
 	}
 
 	fun getUserNameFromJwtToken(token: String?): String {
