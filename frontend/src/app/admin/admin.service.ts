@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
@@ -7,13 +8,13 @@ interface UserResponse {
   username: string;
   id: number;
   isDeleted: boolean;
-  roles: [{ id: number; name: string }];
-  message: string;
+  isAdmin: boolean;
+  message?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  users = [];
+  users = new BehaviorSubject<UserResponse[]>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -26,26 +27,27 @@ export class AdminService {
           return users.map((user) => {
             return {
               username: user.username,
-              userid: user.id,
-              isAdmin: user.roles[0].name === 'ROLE_ADMIN' ? true : false,
+              id: user.id,
+              isAdmin: user.isAdmin,
               isDeleted: user.isDeleted,
             };
           });
         }),
         tap((users) => {
-          this.users = users;
+          console.log(users);
+          this.users.next(users);
         })
-      );
+      )
+      .subscribe();
   }
 
   deleteUser(userid) {
     return this.http
-      .delete<UserResponse>(environment.apiUrl + `/admin/delete/${userid}`)
+      .delete<Number>(environment.apiUrl + `/admin/delete/${userid}`)
       .subscribe((response) => {
         console.log(response); //now its "OK", we want userid
-        let user = this.users.find((user) => user.userid === userid);
-        let index = this.users.indexOf(user);
-        this.users.splice(index, 1);
+        let user = this.users.value.find((user) => user.id === response);
+        user.isDeleted = true;
       });
   }
 }

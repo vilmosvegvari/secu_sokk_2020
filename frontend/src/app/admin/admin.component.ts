@@ -12,10 +12,7 @@ export class AdminComponent implements OnInit {
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-    this.adminService.fetchUsers().subscribe((users) => (this.users = users));
-  }
-
-  fetchUsers() {
+    this.adminService.users.subscribe((users) => (this.users = users));
     this.adminService.fetchUsers();
   }
 

@@ -48,6 +48,9 @@ export class AuthComponent {
         console.log(errorMessage);
         if (errorMessage.name === 'TimeoutError') {
           this.error = errorMessage.message;
+        } else if (errorMessage.error.statusText) {
+          this.error =
+            errorMessage.status + ' - ' + errorMessage.error.statusText;
         } else {
           this.error = errorMessage.status + ' - ' + errorMessage.statusText;
         }
