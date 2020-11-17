@@ -7,14 +7,15 @@ import javax.persistence.*
 @Entity(name = "Tag")
 @Table(name = "tags")
 class Tag(
-	val name: String
+	val name: String,
+	val type: ETagType,
+	@JsonIgnore
+	@ManyToOne(cascade = [CascadeType.ALL])
+	@JoinColumn(name = "caff_id", nullable = false)
+	val caff: Caff
 ) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	var id: Long = 0
 
-	@JsonIgnore
-	@ManyToOne(cascade = [CascadeType.ALL])
-	@JoinColumn(name = "caff_id")
-	private var caff: Caff? = null
 }

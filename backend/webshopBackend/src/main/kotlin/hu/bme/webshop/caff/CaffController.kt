@@ -1,7 +1,5 @@
 package hu.bme.webshop.caff
 import hu.bme.webshop.authentication.dto.response.MessageResponse
-import hu.bme.webshop.models.Caff
-import hu.bme.webshop.models.User
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*

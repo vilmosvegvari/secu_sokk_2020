@@ -1,14 +1,23 @@
 package hu.bme.webshop.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity(name = "Caff")
 @Table(name = "caffs")
-class Caff (
-	val name: String,
-	val date: LocalDateTime,
-	val creator: String
+class Caff(
+		val name: String,
+		var date: LocalDateTime? = null,
+		var creator: String? = null,
+		var status: ECaffStatus,
+		val filename: String,
+		var numAnim: Int? = null,
+		val filesize: Long,
+		@JsonIgnore
+		@ManyToOne(cascade = [CascadeType.ALL])
+		@JoinColumn(name = "user_id")
+		val user: User
 ) {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -18,5 +27,6 @@ class Caff (
 		mappedBy = "caff",
 		cascade = [CascadeType.ALL]
 	)
-	private var tags = mutableListOf<Tag>()
+	var tags = mutableListOf<Tag>()
+
 }
