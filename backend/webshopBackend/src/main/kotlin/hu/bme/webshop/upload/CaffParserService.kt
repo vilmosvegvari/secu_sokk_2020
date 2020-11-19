@@ -46,9 +46,15 @@ class CaffParserService {
                 tags = ArrayList()
 
                 for (ciff in it.ciff_s) {
-                    tags.add(Tag(name = ciff.caption, caff = this, type = ETagType.CAPTION))
+
+                    if(!tags.any { it.name == ciff.caption }) {
+                        tags.add(Tag(name = ciff.caption, caff = this, type = ETagType.CAPTION))
+                    }
+
                     for (tag in ciff.tags) {
-                        tags.add(Tag(name = tag, caff = this, type = ETagType.TAG))
+                        if(!tags.any { it.name == tag }) {
+                            tags.add(Tag(name = tag, caff = this, type = ETagType.TAG))
+                        }
                     }
                 }
             }
