@@ -20,10 +20,10 @@ class CaffController(val caffService: CaffService, val userService: UserDetailsP
 		}
 	}
 
-	@GetMapping("/delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	fun delete(@PathVariable(value = "id") id: Long): ResponseEntity<Any>{
-		var result: Boolean
+		val result: Boolean
 		val currentUser = userService.getUser()
 		if(currentUser.getRoles().any { it.getName() == ERole.ROLE_ADMIN }){
 			result = caffService.delete(id)
