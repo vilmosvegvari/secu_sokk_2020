@@ -25,10 +25,10 @@ class UploadController @Autowired constructor(
 
     @PutMapping("")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    fun handleFileUpload(@RequestParam("file") file: MultipartFile, redirectAttributes: RedirectAttributes): ResponseEntity<*> {
+    fun handleFileUpload(@RequestParam("file") file: MultipartFile): ResponseEntity<*> {
         //Store the file and get stored name
         val filesize = file.size
-        val originalFilename = file.originalFilename!!
+        val originalFilename = file.originalFilename!!.substringBeforeLast('.')
         val filename = fileSystemStorageService.storeCaff(file)
 
         //Store in db
