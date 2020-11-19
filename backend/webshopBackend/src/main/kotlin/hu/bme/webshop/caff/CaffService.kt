@@ -15,9 +15,13 @@ class CaffService(
 		return caffRepository.findAll()
 	}
 
-	fun findById(userId: Long): Caff? {
+	fun findById(caffId: Long): Caff? {
 		//logger.info("UserId ${userService.getUser().id} get userId ${userId} by id")
-		return caffRepository.findById(userId).get()
+		return if (caffRepository.existsById(caffId)){
+			caffRepository.findById(caffId).get()
+		} else {
+			null
+		}
 	}
 
 	fun deleteIfSameUser(caffId: Long, user: User): Boolean{
