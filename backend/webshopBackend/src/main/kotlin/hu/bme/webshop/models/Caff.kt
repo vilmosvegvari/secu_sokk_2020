@@ -15,7 +15,7 @@ class Caff(
 		var numAnim: Int? = null,
 		val filesize: Long,
 		@JsonIgnore
-		@ManyToOne(cascade = [CascadeType.ALL])
+		@ManyToOne
 		@JoinColumn(name = "user_id")
 		val user: User
 ) {
