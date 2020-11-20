@@ -32,15 +32,11 @@
         />
       </div>
       <div>
-        <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="!authForm.valid"
-        >
+        <button class="btn btn-dark" type="submit" [disabled]="!authForm.valid">
           {{ isLoginMode ? "Login" : "Sign Up" }}
         </button>
         |
-        <button class="btn btn-primary" (click)="onSwitchMode()" type="button">
+        <button class="btn btn-dark" (click)="onSwitchMode()" type="button">
           Switch to {{ isLoginMode ? "Sign Up" : "Login" }}
         </button>
       </div>
