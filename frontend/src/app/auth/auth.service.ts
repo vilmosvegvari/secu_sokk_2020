@@ -65,9 +65,8 @@ export class AuthService {
     );
     this.user.next(loadedUser);
     if (userData.expirationDate) {
-      let difference = Math.abs(
-        new Date().getTime() - userData.expirationDate.getTime()
-      );
+      let expires = new Date(userData.expirationDate);
+      let difference = Math.abs(new Date().getTime() - expires.getTime());
       this.autoLogout(difference);
     }
   }
@@ -114,7 +113,8 @@ export class AuthService {
     const user = new User(username, id, token, isAdmin, expirationDate);
     this.user.next(user);
     localStorage.setItem('userData', JSON.stringify(user));
-    let difference = Math.abs(new Date().getTime() - expirationDate.getTime());
+    let expires = new Date(expirationDate);
+    let difference = Math.abs(new Date().getTime() - expires.getTime());
     this.autoLogout(difference);
   }
 }
