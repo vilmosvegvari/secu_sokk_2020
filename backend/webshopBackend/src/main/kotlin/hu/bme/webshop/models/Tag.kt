@@ -10,7 +10,7 @@ class Tag(
 	val name: String,
 	val type: ETagType,
 	@JsonIgnore
-	@ManyToOne(cascade = [CascadeType.ALL])
+	@ManyToOne
 	@JoinColumn(name = "caff_id", nullable = false)
 	val caff: Caff
 ) {

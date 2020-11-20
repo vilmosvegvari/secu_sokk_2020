@@ -12,7 +12,7 @@ class Caff(
 		var creator: String? = null,
 		var status: ECaffStatus,
 		val filename: String,
-		var numAnim: Int? = null,
+		var numAnim: Long = 0,
 		val filesize: Long,
 		@JsonIgnore
 		@ManyToOne
@@ -28,5 +28,12 @@ class Caff(
 		cascade = [CascadeType.ALL]
 	)
 	var tags = mutableListOf<Tag>()
+
+	@OneToMany(
+		mappedBy = "caff",
+		cascade = [CascadeType.ALL]
+	)
+	var comments = mutableListOf<Comment>()
+
 
 }
