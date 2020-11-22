@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
                 std::cin >> caff_file_path;
                 continue;
             default:
-                std::cerr << "Unknown parameter" << c;
+                std::cerr << "Unknown parameter" << c << std::endl;
                 return -1;
         }
     }
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         caff.parseCaff();
         caff.generateFiles();
     } catch (BadFileFormatException &e) {
-        std::cerr << "Bad file format!: " << e.what();
+        std::cerr << "Bad file format!: " << e.what() << std::endl;
         return -1;
     }
     return 0;
