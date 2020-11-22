@@ -53,4 +53,7 @@ target_link_libraries(${PROJECT_NAME}_lib PUBLIC nlohmann_json::nlohmann_json)
 
 target_include_directories(${PROJECT_NAME}_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-
+install (TARGETS ${PROJECT_NAME}
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin)
