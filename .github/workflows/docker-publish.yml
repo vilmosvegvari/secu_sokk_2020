@@ -17,5 +17,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: secu_sokk_2020/parser
+          repository: vilmosvegvari/secu_sokk_2020/parser
           tag_with_ref: true
