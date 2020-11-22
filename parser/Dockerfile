@@ -31,7 +31,7 @@ RUN wget -q https://www.imagemagick.org/download/ImageMagick.tar.gz && \
 WORKDIR /app
 COPY . .
 
-RUN cd out && \
+RUN mkdir out && cd out && \
     cmake .. && \
     cmake --build . --target parser && \
     cmake --build . --target install
