@@ -40,7 +40,7 @@ if (NOT json_POPULATED)
     add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif ()
 
-add_library(${PROJECT_NAME}_lib  STATIC
+add_library(${PROJECT_NAME}_lib STATIC
         ${SOURCE_FILES}
         ${HEADER_FILES}
         )
@@ -53,7 +53,4 @@ target_link_libraries(${PROJECT_NAME}_lib PUBLIC nlohmann_json::nlohmann_json)
 
 target_include_directories(${PROJECT_NAME}_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-install (TARGETS ${PROJECT_NAME}
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin)
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
