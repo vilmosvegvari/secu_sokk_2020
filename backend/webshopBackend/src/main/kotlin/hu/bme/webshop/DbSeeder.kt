@@ -22,7 +22,6 @@ class DbSeeder(
 
 		if (!roleRepository.existsById(1)) {
 			roleRepository.save(Role(ERole.ROLE_ADMIN))
-			roleRepository.save(Role(ERole.ROLE_MODERATOR))
 			roleRepository.save(Role(ERole.ROLE_USER))
 		}
 

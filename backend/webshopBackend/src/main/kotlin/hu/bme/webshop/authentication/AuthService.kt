@@ -109,14 +109,6 @@ class AuthService(
 							}
 						newRoles.add(adminRole)
 					}
-					"mod" -> {
-						val modRole: Role = roleRepository!!.findByName(ERole.ROLE_MODERATOR)
-							.orElseThrow {
-								logger.info("Error: ${ERole.ROLE_MODERATOR} Role is not found.")
-								RuntimeException("Error: Role is not found.")
-							}
-						newRoles.add(modRole)
-					}
 					"user" -> {
 						val userRole: Role = roleRepository!!.findByName(ERole.ROLE_USER)
 							.orElseThrow {
