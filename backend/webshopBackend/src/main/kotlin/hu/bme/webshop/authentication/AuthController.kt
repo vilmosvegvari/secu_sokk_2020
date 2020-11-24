@@ -1,16 +1,12 @@
 package hu.bme.webshop.authentication
 
-import hu.bme.webshop.models.User
 import hu.bme.webshop.authentication.dto.request.LoginRequest
 import hu.bme.webshop.authentication.dto.request.RolesRequest
 import hu.bme.webshop.authentication.dto.request.SignupRequest
-import hu.bme.webshop.authentication.dto.request.SignupResponse
-import hu.bme.webshop.authentication.dto.response.AuthResponse
 import hu.bme.webshop.authentication.dto.response.MessageResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import java.net.http.HttpResponse
 import javax.validation.Valid
 
 

@@ -11,9 +11,14 @@ class AdminService(
 	//val logger: Logger = LoggerFactory.getLogger(UserService::class.java)
 ) {
 
-	fun findAll(): MutableIterable<User> {
+	fun findAll(): MutableIterable<UserResponse> {
 		//logger.info("UserId ${userService.getUser().id} get all users")
-		return userRepository.findAll()
+		val allUsers = userRepository.findAll()
+		val result = mutableListOf<UserResponse>()
+		allUsers.forEach{
+			result.add(it.toUserResponse())
+		}
+		return result
 	}
 
 	fun findById(userId: Long): UserResponse {
