@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/caff")
 class CaffController(val caffService: CaffService, val userService: UserDetailsProvider) {
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun all(): ResponseEntity<*> {
         return try {
             ResponseEntity.ok(caffService.findAll())

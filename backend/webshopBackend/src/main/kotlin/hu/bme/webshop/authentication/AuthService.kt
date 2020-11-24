@@ -52,10 +52,11 @@ class AuthService(
 		val token = jwtUtils!!.generateJwtToken(authentication)
 		val jwt = token.first
 		val userDetails = authentication.principal as UserDetailsImpl
+		if(userDetails.isDeleted())
+			throw Exception("User is deleted")
 		val isAdmin = userDetails.authorities.stream()
 			.map { item: GrantedAuthority -> item.authority }
 			.collect(Collectors.toList()).contains("ROLE_ADMIN")
-
 		logger.info("UserId ${userDetails.id} logged in")
 		return AuthResponse(
 			jwt,
