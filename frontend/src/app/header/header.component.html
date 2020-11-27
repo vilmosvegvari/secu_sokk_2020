@@ -14,12 +14,12 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+      <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
         <a class="nav-link" routerLink="/pictures"
           >Home <span class="sr-only"></span
         ></a>
       </li>
-      <li class="nav-item">
+      <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
         <a
           class="nav-link"
           [ngClass]="{ disabled: !isAuthenticated }"
@@ -27,7 +27,7 @@
           >Upload</a
         >
       </li>
-      <li class="nav-item" *ngIf="isAdmin">
+      <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}" *ngIf="isAdmin">
         <a class="nav-link" routerLink="/admin">Admin</a>
       </li>
     </ul>
@@ -36,16 +36,5 @@
         {{ isAuthenticated ? "Logout" : "Login" }}</a
       >
     </span>
-    <form class="form-inline my-2 my-lg-0">
-      <input
-        class="form-control mr-sm-2"
-        type="search"
-        placeholder="Search"
-        aria-label="Search"
-      />
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-        Search
-      </button>
-    </form>
   </div>
 </nav>

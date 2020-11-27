@@ -1,1 +1,12 @@
-<p>upload works!</p>
+ <form #f (ngSubmit)="onClickUpload(f)" (reset)="onClickReset()">
+    <div class="input-group mb-3">
+        <div class="custom-file">
+            <input #fileInput type="file" class="custom-file-input" id="inputGroupFile02" accept=".caff" (change)="fileChange($event)"/>
+            <label class="custom-file-label" for="inputGroupFile02" *ngIf="fileName">{{fileName}} </label>
+        </div>
+        <div class="input-group-append">
+            <input class="btn btn-danger" type="reset" value="Reset" [disabled]="!fileSelected">
+            <input class="btn btn-success" type="submit" value="Submit" [disabled]="!fileSelected">
+        </div>
+    </div>
+ </form>

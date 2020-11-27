@@ -4,6 +4,7 @@ import { AdminGuard } from './admin/admin-guard';
 import { AdminComponent } from './admin/admin.component';
 import { AuthGuard } from './auth/auth-guard';
 import { AuthComponent } from './auth/auth.component';
+import { PictureComponent } from './pictures/picture/picture.component';
 import { PicturesComponent } from './pictures/pictures.component';
 import { UploadComponent } from './upload/upload.component';
 
@@ -17,6 +18,7 @@ const routes: Routes = [
     canActivate: [AdminGuard],
   },
   { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] },
+  { path: 'pictures/:id', component: PictureComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
