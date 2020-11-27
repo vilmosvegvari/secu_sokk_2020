@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row justify-content-center">
   <div class="col-xs-12 col-md-6 col-md-offset-3">
     <div class="alert alert-danger" *ngIf="error">
       <p>{{ error }}</p>
@@ -32,15 +32,11 @@
         />
       </div>
       <div>
-        <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="!authForm.valid"
-        >
+        <button class="btn btn-dark" type="submit" [disabled]="!authForm.valid">
           {{ isLoginMode ? "Login" : "Sign Up" }}
         </button>
         |
-        <button class="btn btn-primary" (click)="onSwitchMode()" type="button">
+        <button class="btn btn-dark" (click)="onSwitchMode()" type="button">
           Switch to {{ isLoginMode ? "Sign Up" : "Login" }}
         </button>
       </div>

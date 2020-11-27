@@ -42,7 +42,7 @@ class CaffParserService {
                 creator = it.creator
                 date = it.getLocalDateTime()
                 status = ECaffStatus.OK
-                numAnim = it.ciff_s.size
+                numAnim = it.ciff_s.size.toLong()
                 tags = ArrayList()
 
                 for (ciff in it.ciff_s) {

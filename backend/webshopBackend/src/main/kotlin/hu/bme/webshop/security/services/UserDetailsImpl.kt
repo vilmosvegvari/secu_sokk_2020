@@ -13,7 +13,8 @@ class UserDetailsImpl(
 	private val username: String,
 	@field:JsonIgnore
 	private val password: String,
-	private val authorities: Collection<GrantedAuthority>
+	private val authorities: Collection<GrantedAuthority>,
+	private val isDeleted: Boolean
 ) : UserDetails {
 
 	override fun getAuthorities() = authorities
@@ -29,6 +30,8 @@ class UserDetailsImpl(
 	override fun isCredentialsNonExpired() = true
 
 	override fun isEnabled() = true
+
+	fun isDeleted() = isDeleted
 
 	override fun equals(other: Any?): Boolean {
 		if (this === other) return true
@@ -47,7 +50,8 @@ class UserDetailsImpl(
 				user.id,
 				user.username,
 				user.password,
-				authorities
+				authorities,
+				user.isDeleted
 			)
 		}
 	}

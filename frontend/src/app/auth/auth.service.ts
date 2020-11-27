@@ -12,12 +12,14 @@ export interface AuthDataResponse {
   token: string;
   id: string;
   isAdmin: boolean;
+  expirationDate: Date;
   errorMessage?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   user = new BehaviorSubject<User>(null);
+  private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -34,7 +36,8 @@ export class AuthService {
             resData.username,
             resData.id,
             resData.token,
-            resData.isAdmin
+            resData.isAdmin,
+            resData.expirationDate
           );
         })
       );
@@ -46,6 +49,7 @@ export class AuthService {
       id: string;
       _token: string;
       isAdmin: boolean;
+      expirationDate: Date;
     } = JSON.parse(localStorage.getItem('userData'));
 
     if (!userData) {
@@ -56,9 +60,15 @@ export class AuthService {
       userData.username,
       userData.id,
       userData._token,
-      userData.isAdmin
+      userData.isAdmin,
+      userData.expirationDate
     );
     this.user.next(loadedUser);
+    if (userData.expirationDate) {
+      let expires = new Date(userData.expirationDate);
+      let difference = Math.abs(new Date().getTime() - expires.getTime());
+      this.autoLogout(difference);
+    }
   }
 
   login(username: string, password: string) {
@@ -74,7 +84,8 @@ export class AuthService {
             resData.username,
             resData.id,
             resData.token,
-            resData.isAdmin
+            resData.isAdmin,
+            resData.expirationDate
           );
         })
       );
@@ -86,14 +97,24 @@ export class AuthService {
     this.router.navigate(['/auth']);
   }
 
+  autoLogout(expirationDuration: number) {
+    this.tokenExpirationTimer = setTimeout(() => {
+      this.logout();
+    }, expirationDuration);
+  }
+
   private handleAuthentication(
     username: string,
     id: string,
     token: string,
-    isAdmin: boolean
+    isAdmin: boolean,
+    expirationDate: Date
   ) {
-    const user = new User(username, id, token, isAdmin);
+    const user = new User(username, id, token, isAdmin, expirationDate);
     this.user.next(user);
     localStorage.setItem('userData', JSON.stringify(user));
+    let expires = new Date(expirationDate);
+    let difference = Math.abs(new Date().getTime() - expires.getTime());
+    this.autoLogout(difference);
   }
 }

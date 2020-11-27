@@ -52,10 +52,11 @@ class AuthService(
 		val token = jwtUtils!!.generateJwtToken(authentication)
 		val jwt = token.first
 		val userDetails = authentication.principal as UserDetailsImpl
+		if(userDetails.isDeleted())
+			throw Exception("User is deleted")
 		val isAdmin = userDetails.authorities.stream()
 			.map { item: GrantedAuthority -> item.authority }
 			.collect(Collectors.toList()).contains("ROLE_ADMIN")
-
 		logger.info("UserId ${userDetails.id} logged in")
 		return AuthResponse(
 			jwt,
@@ -107,14 +108,6 @@ class AuthService(
 								RuntimeException("Error: Role is not found.")
 							}
 						newRoles.add(adminRole)
-					}
-					"mod" -> {
-						val modRole: Role = roleRepository!!.findByName(ERole.ROLE_MODERATOR)
-							.orElseThrow {
-								logger.info("Error: ${ERole.ROLE_MODERATOR} Role is not found.")
-								RuntimeException("Error: Role is not found.")
-							}
-						newRoles.add(modRole)
 					}
 					"user" -> {
 						val userRole: Role = roleRepository!!.findByName(ERole.ROLE_USER)
