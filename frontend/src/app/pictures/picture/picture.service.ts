@@ -1,8 +1,6 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 
 interface PictureDetailResponse {
   id : number,
