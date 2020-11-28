@@ -15,6 +15,7 @@ interface Comment {
 interface PictureDetailResponse {
   id : number,
   name: string,
+  userName: string,
   comments: Comment[],
   tags: string[]
 }
@@ -22,6 +23,7 @@ interface PictureDetailResponse {
 @Injectable({ providedIn: 'root' })
 export class PictureService {
   picture = new BehaviorSubject<PictureDetailResponse>(null);
+  gifUrl = new BehaviorSubject<string>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -35,6 +37,7 @@ export class PictureService {
             return {
               id: picture.id,
               name: picture.name,
+              userName: picture.userName,
               comments: picture.comments,
               tags: picture.tags
             };
@@ -68,5 +71,9 @@ export class PictureService {
       });
   }
 
-
+  Delete(pictureId: Number) {
+    return this.http
+          .delete<Number>(environment.apiUrl + `/caff/delete/${pictureId}`, { observe: 'response' })
+          .subscribe();
+  }
 }

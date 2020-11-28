@@ -14,6 +14,7 @@
         placeholder="Comment" aria-label="Comment" (keydown.enter)="onComment(); commentIn.value = ''"> 
         <div class="input-group-append">
             <button type="button" class="btn btn-primary" (click)="onComment(); commentIn.value = ''">Commnet</button>
+            <button type="button" class="btn btn-danger" (click)="Delete(); commentIn.value = ''" *ngIf="user.isAdmin || user.username === picture.userName">Delete</button>
         </div>
     </div>
     <div class="d-flex flex-column-reverse flex-wrap bg-light justify-content-between ">
@@ -21,7 +22,7 @@
             <div class="p-2 border" >
                 <div class="p-2">
                     {{comment.userName}} - {{comment.date}}
-                    <input type="button" value="X" style="float: right;" (click)="onRemoveComment(comment.id)">
+                    <input type="button" value="X" style="float: right;" (click)="onRemoveComment(comment.id)" *ngIf="user.username === comment.userName">
                 </div>
                 <div class="p-2"  style="word-wrap: break-word; text-align:left;">{{comment.message}}</div>    
             </div>      

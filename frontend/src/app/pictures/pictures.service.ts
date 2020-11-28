@@ -24,6 +24,7 @@ export class PicturesService {
       .pipe(
         map((pictures) => {
           return pictures.map((picture) => {
+            console.log(pictures);
             return {
               id: picture.id,
               name: picture.name,
