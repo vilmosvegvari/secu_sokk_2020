@@ -35,5 +35,8 @@ class Caff(
 	)
 	var comments = mutableListOf<Comment>()
 
-
+	val thumbnailUrl: String
+	get(){
+		return "/download/thumbnail/$id"
+	}
 }
