@@ -2,6 +2,7 @@ package hu.bme.webshop.download
 
 import hu.bme.webshop.caff.CaffRepository
 import hu.bme.webshop.models.Caff
+import hu.bme.webshop.models.ECaffStatus
 import hu.bme.webshop.security.services.UserDetailsProvider
 import hu.bme.webshop.upload.FileSystemStorageService
 import org.springframework.beans.factory.annotation.Autowired
@@ -45,7 +46,7 @@ class DownloadController @Autowired constructor(
     @ResponseBody
     fun downloadThumbnail(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = getCaff(id)
-        if (caff == null) {
+        if (caff == null || caff.status != ECaffStatus.OK) {
             response.status = 404
             return null
         }
@@ -61,7 +62,7 @@ class DownloadController @Autowired constructor(
     @ResponseBody
     fun downloadGif(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = getCaff(id)
-        if (caff == null) {
+        if (caff == null || caff.status != ECaffStatus.OK) {
             response.status = 404
             return null
         }
