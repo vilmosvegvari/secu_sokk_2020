@@ -47,7 +47,7 @@ class CaffService(
     fun deleteCommentIfSameUser(caffId: Long, commentId: Long, user: User): Boolean {
         if (commentRepository.existsById(commentId)) {
             val comment = commentRepository.findById(commentId).get()
-            if (comment.caff.id == caffId && user == user){
+            if (comment.caff.id == caffId && comment.user == user){
                 commentRepository.delete(comment)
                 return true
             }
