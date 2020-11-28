@@ -21,12 +21,12 @@ interface PictureDetailResponse {
   filesize: number;
   gif: string;
   numAnim: number;
+  thumbnailUrl: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class PictureService {
   picture = new BehaviorSubject<PictureDetailResponse>(null);
-  gifUrl = new BehaviorSubject<string>(null);
 
   constructor(private http: HttpClient) {}
 
