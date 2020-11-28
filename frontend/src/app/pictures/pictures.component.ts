@@ -26,11 +26,12 @@ export class PicturesComponent implements OnInit{
   }
 
   onDownloadPicture(pictureId){
-      this.picturesService.downloadPicture(pictureId);
+      this.picturesService.downloadCaff(pictureId);
+      this.picturesService.downloadPNG(pictureId);
+      this.picturesService.downloadGIF(pictureId);
   }
 
   onOpenPicture(pictureId){
     this.router.navigate(['/pictures', pictureId]);
-
   }
 }

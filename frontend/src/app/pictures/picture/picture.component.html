@@ -1,4 +1,32 @@
-<p>picture: {{id}}</p>
-<div *ngIf="picture !== null">{{picture.id}}</div>
+<div *ngIf="picture !== null">
+
+    <h1 style="text-align:center"> {{ picture.name }}</h1> 
+    <div #mainFlex class="d-flex flex-column flex-wrap bg-light justify-content-between ">
+        <img style="display: block; margin-left: auto; margin-right: auto;" src="assets/img/logo.png" width=300 height = 450>
+        <div class="d-flex flex-wrap bg-light justify-content-center ">
+            <div *ngFor="let tag of picture.tags; let i = index">
+                <div class="p-2 border">{{tag}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="input-group mb-3">
+        <input #commentIn [maxLength]="200" (input)="comment=$event.target.value" type="text" class="form-control" 
+        placeholder="Comment" aria-label="Comment" (keydown.enter)="onComment(); commentIn.value = ''"> 
+        <div class="input-group-append">
+            <button type="button" class="btn btn-primary" (click)="onComment(); commentIn.value = ''">Commnet</button>
+        </div>
+    </div>
+    <div class="d-flex flex-column-reverse flex-wrap bg-light justify-content-between ">
+        <div *ngFor="let comment of picture.comments; let i = index" style="max-width: 100%"> 
+            <div class="p-2 border" >
+                <div class="p-2">
+                    {{comment.userName}} - {{comment.date}}
+                    <input type="button" value="X" style="float: right;" (click)="onRemoveComment(comment.id)">
+                </div>
+                <div class="p-2"  style="word-wrap: break-word; text-align:left;">{{comment.message}}</div>    
+            </div>      
+        </div>
+    </div>
+</div>
 
 

@@ -50,7 +50,7 @@ export class PicturesService {
           });
   }
 
-   downloadPicture(pictureId) {   
+   downloadCaff(pictureId) {   
       this.http.get(environment.apiUrl + `/download/${pictureId}`, {responseType: 'blob'})
       .subscribe(response => {
         const link = document.createElement('a');
@@ -59,4 +59,25 @@ export class PicturesService {
         link.click();
       });
    }
+
+   downloadPNG(pictureId) {   
+    this.http.get(environment.apiUrl + `/download/thumbnail/${pictureId}`, {responseType: 'blob'})
+    .subscribe(response => {
+      console.log(response)
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(new Blob([response], {type: "image/png"}));
+      link.download = "file.png";
+      link.click();
+    });
+ }
+
+ downloadGIF(pictureId) {   
+  this.http.get(environment.apiUrl + `/download/gif/${pictureId}`, {responseType: 'blob'})
+  .subscribe(response => {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([response], {type: "image/gif"}));
+    link.download = "file.gif";
+    link.click();
+  });
+}
 }

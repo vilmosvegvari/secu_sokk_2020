@@ -13,6 +13,8 @@ export class PictureComponent implements OnInit, OnDestroy {
 
   picture = null;
 
+  comment: string ="";
+
   constructor(private pictureService: PictureService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -22,6 +24,19 @@ export class PictureComponent implements OnInit, OnDestroy {
 
    this.pictureService.picture.subscribe((picture) => (this.picture = picture));
    this.pictureService.fetchPicture(this.id);
+  }
+
+  onComment()
+  {
+    this.comment = this.comment.trim();
+    if(this.comment) {
+      this.pictureService.Comment(this.id, this.comment);
+      this.comment = '';
+    }
+  }
+
+  onRemoveComment(commentId) {
+    this.pictureService.RemoveComment(this.id, commentId);
   }
 
   ngOnDestroy() {
