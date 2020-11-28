@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -16,8 +16,9 @@ export class PictureService {
 
   fetchPicture(pictureId) {
     console.log('fetching');
+
     return this.http
-      .get<PictureDetailResponse>(environment.apiUrl + `/details/${pictureId}`)
+      .get<PictureDetailResponse>(environment.apiUrl + `/caff/details/${pictureId}`)
       .pipe(
         map((picture) => {          
             return {

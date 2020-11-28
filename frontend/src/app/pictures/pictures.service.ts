@@ -50,13 +50,13 @@ export class PicturesService {
           });
   }
 
-   downloadPicture(pictureId) {
-      this.http.get<Blob>(environment.apiUrl + `/download/${pictureId}`)
+   downloadPicture(pictureId) {   
+      this.http.get(environment.apiUrl + `/download/${pictureId}`, {responseType: 'blob'})
       .subscribe(response => {
-        const blob = new Blob([response], { type: 'caff' });
-        const url= window.URL.createObjectURL(blob);
-        window.open(url);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([response], {type: "caff"}));
+        link.download = "file.caff";
+        link.click();
       });
-
    }
 }
