@@ -30,13 +30,16 @@ class DownloadController @Autowired constructor(
     @ResponseBody
     fun downloadCaff(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = caffService.findById(id)
-        return if(caff != null){
-            response.addHeader("Content-Disposition", "attachment; filename=${caff.name}.caff")
-            Paths.get("${FileSystemStorageService.caffLocation}/${caff.filename}.caff").toFile().readBytes()
-        } else {
-            response.status = 404
-            null
+        if(caff != null){
+            val file = Paths.get("${FileSystemStorageService.caffLocation}/${caff.filename}.caff").toFile()
+            if (file.canRead()){
+                response.addHeader("Content-Disposition", "attachment; filename=${caff.name}.caff")
+                return file.readBytes()
+            }
         }
+
+        response.status = 404
+        return null
     }
 
     @GetMapping(
@@ -47,13 +50,15 @@ class DownloadController @Autowired constructor(
     @ResponseBody
     fun downloadThumbnail(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = caffService.findById(id)
-        return if(caff != null){
-            Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.png").toFile().readBytes()
-        } else {
-            response.status = 404
-            null
+        if(caff != null){
+            val file = Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.png").toFile()
+            if (file.canRead()){
+                return file.readBytes()
+            }
         }
 
+        response.status = 404
+        return null
     }
 
     @GetMapping(
@@ -64,11 +69,15 @@ class DownloadController @Autowired constructor(
     @ResponseBody
     fun downloadGif(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = caffService.findById(id)
-        return if(caff != null){
-            Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.gif").toFile().readBytes()
-        } else {
-            response.status = 404
-            return null
+        if(caff != null){
+            val file = Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.gif").toFile()
+            if (file.canRead()){
+                return file.readBytes()
+            }
         }
+
+        response.status = 404
+        return null
+
     }
 }
