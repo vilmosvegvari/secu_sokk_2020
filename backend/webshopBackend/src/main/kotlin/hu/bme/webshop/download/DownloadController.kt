@@ -1,7 +1,9 @@
 package hu.bme.webshop.download
 
 import hu.bme.webshop.caff.CaffRepository
+import hu.bme.webshop.caff.CaffService
 import hu.bme.webshop.models.Caff
+import hu.bme.webshop.models.ECaffStatus
 import hu.bme.webshop.security.services.UserDetailsProvider
 import hu.bme.webshop.upload.FileSystemStorageService
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +19,7 @@ import javax.servlet.http.HttpServletResponse
 @RequestMapping("/api/download")
 class DownloadController @Autowired constructor(
         private val userService: UserDetailsProvider,
-        private val caffRepository: CaffRepository
+        val caffService: CaffService
 ) {
 
     @GetMapping(
@@ -27,14 +29,17 @@ class DownloadController @Autowired constructor(
     @PreAuthorize("hasAnyRole('USER')")
     @ResponseBody
     fun downloadCaff(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
-        val caff = getCaff(id)
-        if (caff == null) {
-            response.status = 404
-            return null
+        val caff = caffService.findById(id)
+        if(caff != null){
+            val file = Paths.get("${FileSystemStorageService.caffLocation}/${caff.filename}.caff").toFile()
+            if (file.canRead()){
+                response.addHeader("Content-Disposition", "attachment; filename=${caff.name}.caff")
+                return file.readBytes()
+            }
         }
 
-        response.addHeader("Content-Disposition", "attachment; filename=${caff.name}.caff")
-        return Paths.get("${FileSystemStorageService.caffLocation}/${caff.filename}.caff").toFile().readBytes()
+        response.status = 404
+        return null
     }
 
     @GetMapping(
@@ -44,13 +49,16 @@ class DownloadController @Autowired constructor(
     @PreAuthorize("hasAnyRole('USER')")
     @ResponseBody
     fun downloadThumbnail(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
-        val caff = getCaff(id)
-        if (caff == null) {
-            response.status = 404
-            return null
+        val caff = caffService.findById(id)
+        if(caff != null){
+            val file = Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.png").toFile()
+            if (file.canRead()){
+                return file.readBytes()
+            }
         }
 
-        return Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.png").toFile().readBytes()
+        response.status = 404
+        return null
     }
 
     @GetMapping(
@@ -60,21 +68,16 @@ class DownloadController @Autowired constructor(
     @PreAuthorize("hasAnyRole('USER')")
     @ResponseBody
     fun downloadGif(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
-        val caff = getCaff(id)
-        if (caff == null) {
-            response.status = 404
-            return null
+        val caff = caffService.findById(id)
+        if(caff != null){
+            val file = Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.gif").toFile()
+            if (file.canRead()){
+                return file.readBytes()
+            }
         }
 
-        return Paths.get("${FileSystemStorageService.generatedLocation}/${caff.filename}.gif").toFile().readBytes()
-    }
+        response.status = 404
+        return null
 
-    fun getCaff(id: Long): Caff? {
-        val caff = caffRepository.findById(id)
-        if (caff.isEmpty) {
-            return null
-        }
-
-        return caff.get();
     }
 }
