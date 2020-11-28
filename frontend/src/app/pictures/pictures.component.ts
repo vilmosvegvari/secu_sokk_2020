@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PicturesService } from './pictures.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { CoreEnvironment } from '@angular/compiler/src/compiler_facade_interface';
 
 @Component({
   selector: 'app-pictures',
@@ -11,6 +13,7 @@ import { Subscription } from 'rxjs';
 export class PicturesComponent implements OnInit, OnDestroy {
   pictures = [];
   pictureSub: Subscription;
+  apiUrl: string;
 
   constructor(
     private picturesService: PicturesService,
@@ -18,6 +21,7 @@ export class PicturesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.apiUrl = environment.apiUrl;
     this.pictureSub = this.picturesService.pictures.subscribe(
       (pictures) => (this.pictures = pictures)
     );
@@ -38,8 +42,6 @@ export class PicturesComponent implements OnInit, OnDestroy {
 
   onDownloadPicture(pictureId) {
     this.picturesService.downloadCaff(pictureId);
-    this.picturesService.downloadPNG(pictureId);
-    this.picturesService.downloadGIF(pictureId);
   }
 
   onOpenPicture(pictureId) {

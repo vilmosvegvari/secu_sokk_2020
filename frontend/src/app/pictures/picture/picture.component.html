@@ -2,7 +2,7 @@
 
     <h1 style="text-align:center"> {{ picture.name }}</h1> 
     <div #mainFlex class="d-flex flex-column flex-wrap bg-light justify-content-between ">
-        <img style="display: block; margin-left: auto; margin-right: auto;" src="assets/img/logo.png" width=300 height = 450>
+        <img style="display: block; margin-left: auto; margin-right: auto;" src="{{apiUrl}}{{picture.gif}}" width=300 height = 450>
         <div class="d-flex flex-wrap bg-light justify-content-center ">
             <div *ngFor="let tag of picture.tags; let i = index">
                 <div class="p-2 border">{{tag}}</div>

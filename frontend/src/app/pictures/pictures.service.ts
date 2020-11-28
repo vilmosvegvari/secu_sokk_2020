@@ -9,6 +9,7 @@ interface PictureMiniResponse {
   name: string;
   filename: string;
   filesize: number;
+  thumbnailUrl: string
 }
 
 @Injectable({ providedIn: 'root' })
@@ -21,18 +22,7 @@ export class PicturesService {
     console.log('fetching');
     return this.http
       .get<PictureMiniResponse[]>(environment.apiUrl + '/caff/all')
-      .pipe(
-        map((pictures) => {
-          return pictures.map((picture) => {
-            console.log(pictures);
-            return {
-              id: picture.id,
-              name: picture.name,
-              filename: picture.filename,
-              filesize: picture.filesize,
-            };
-          });
-        }),
+      .pipe(      
         take(1),
         tap((pictures) => {
           this.pictures.next(pictures);

@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { PictureService } from './picture.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-picture',
@@ -12,6 +13,7 @@ import { PictureService } from './picture.service';
 export class PictureComponent implements OnInit, OnDestroy {
   id: number;
   private sub: any;
+  apiUrl: string;
 
   picture = null;
   user = null;
@@ -25,6 +27,7 @@ export class PictureComponent implements OnInit, OnDestroy {
       this.id = +params['id'];
    });
 
+   this.apiUrl = environment.apiUrl;
    this.pictureService.picture.subscribe((picture) => (this.picture = picture));
    this.authService.user.subscribe(user => this.user = user);
    this.pictureService.fetchPicture(this.id);
