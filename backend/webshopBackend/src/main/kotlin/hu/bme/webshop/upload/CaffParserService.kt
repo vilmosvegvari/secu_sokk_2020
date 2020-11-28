@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import java.io.IOException
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
@@ -23,6 +24,7 @@ class CaffParserService {
 
     @Async
     fun processCaff(filename: String) {
+
         //Call native parser
         val result = parseCaff(filename)
 
@@ -37,7 +39,7 @@ class CaffParserService {
         }
 
         //Update caff based on parsed JSON
-        processParsedJSON(filename).also {
+        processParsedJSON(filename)?.also {
             caff.apply {
                 creator = it.creator
                 date = it.getLocalDateTime()
@@ -47,12 +49,12 @@ class CaffParserService {
 
                 for (ciff in it.ciff_s) {
 
-                    if(!tags.any { it.name == ciff.caption }) {
+                    if (!tags.any { it.name == ciff.caption }) {
                         tags.add(Tag(name = ciff.caption, caff = this, type = ETagType.CAPTION))
                     }
 
                     for (tag in ciff.tags) {
-                        if(!tags.any { it.name == tag }) {
+                        if (!tags.any { it.name == tag }) {
                             tags.add(Tag(name = tag, caff = this, type = ETagType.TAG))
                         }
                     }
@@ -62,24 +64,34 @@ class CaffParserService {
         caffRepository.save(caff)
     }
 
-    fun parseCaff(filename: String): Int{
+    fun parseCaff(filename: String): Int {
         val cmd = "$parser -f ${FileSystemStorageService.caffLocation}/${filename}.caff -o ${FileSystemStorageService.generatedLocation}"
 
         val parts = cmd.split("\\s".toRegex())
-        val proc = ProcessBuilder(*parts.toTypedArray())
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                .start()
+
+        val proc = try {
+            ProcessBuilder(*parts.toTypedArray())
+                    .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start()
+        } catch (e: IOException) {
+            println("Error running parser! Check if parser executable is set properly!(current: $parser)")
+            return -1
+        }
 
         proc.waitFor(1, TimeUnit.MINUTES)
-
         return proc.exitValue()
     }
 
-    fun processParsedJSON(filename: String): RawCaff {
-        val json = Paths.get("${FileSystemStorageService.generatedLocation}/${filename}.json").toFile().readText()
+    fun processParsedJSON(filename: String): RawCaff? {
+        val file = Paths.get("${FileSystemStorageService.generatedLocation}/${filename}.json").toFile()
+        return if(file.canRead()){
+            val json = file.readText()
+            val objectMapper = ObjectMapper()
+            objectMapper.readValue(json, RawCaff::class.java)
+        } else {
+            null
+        }
 
-        val objectMapper = ObjectMapper()
-        return objectMapper.readValue(json, RawCaff::class.java)
     }
 }
