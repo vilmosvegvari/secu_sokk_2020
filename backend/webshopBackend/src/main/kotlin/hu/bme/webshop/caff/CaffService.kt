@@ -2,6 +2,7 @@ package hu.bme.webshop.caff
 
 import hu.bme.webshop.models.Caff
 import hu.bme.webshop.models.Comment
+import hu.bme.webshop.models.ECaffStatus
 import hu.bme.webshop.models.User
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -15,13 +16,19 @@ class CaffService(
 
     fun findAll(): MutableIterable<Caff> {
         //logger.info("UserId ${userService.getUser().id} get all users")
-        return caffRepository.findAll()
+        return caffRepository.findAllByStatus(ECaffStatus.OK)
     }
 
     fun findById(caffId: Long): Caff? {
         //logger.info("UserId ${userService.getUser().id} get userId ${userId} by id")
-        return if (caffRepository.existsById(caffId)) {
-            caffRepository.findById(caffId).get()
+
+        return if(caffRepository.existsById(caffId)){
+            val caff = caffRepository.findById(caffId).get()
+            return if (caff.status == ECaffStatus.OK){
+                caff
+            } else {
+                null
+            }
         } else {
             null
         }
