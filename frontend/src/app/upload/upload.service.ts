@@ -1,22 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
 
+import { take } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UploadService {
-
   constructor(private http: HttpClient) {}
 
-  Upload(file : File) {
+  Upload(file: File) {
+    let formData: FormData = new FormData();
+    formData.append('file', file, file.name);
 
-    let formData:FormData = new FormData();
-        formData.append('file', file, file.name);
-
-    this.http.put(environment.apiUrl + '/upload', formData)
-    .subscribe((response) => {
+    this.http
+      .put(environment.apiUrl + '/upload', formData)
+      .pipe(take(1))
+      .subscribe((response) => {
         console.log(response);
       });
   }

@@ -1,23 +1,26 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 interface Comment {
-  id: number
-  date : Date,
-  message: string,
-  userName: string
+  id: number;
+  date: Date;
+  message: string;
+  userName: string;
 }
 
-
 interface PictureDetailResponse {
-  id : number,
-  name: string,
-  userName: string,
-  comments: Comment[],
-  tags: string[]
+  id: number;
+  name: string;
+  comments: Comment[];
+  tags: string[];
+  captions: [];
+  creator: string;
+  filesize: number;
+  gif: string;
+  numAnim: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -28,44 +31,37 @@ export class PictureService {
   constructor(private http: HttpClient) {}
 
   fetchPicture(pictureId) {
-    console.log('fetching');
-
     return this.http
-      .get<PictureDetailResponse>(environment.apiUrl + `/caff/details/${pictureId}`)
-      .pipe(
-        map((picture) => {          
-            return {
-              id: picture.id,
-              name: picture.name,
-              userName: picture.userName,
-              comments: picture.comments,
-              tags: picture.tags
-            };
-          }
-        ),
-        tap((picture) => {
-          console.log(picture);
-          this.picture.next(picture);
-        }) 
-        )
-      .subscribe();
+      .get<PictureDetailResponse>(
+        environment.apiUrl + `/caff/details/${pictureId}`
+      )
+      .pipe(take(1))
+      .subscribe((picture) => {
+        console.log(picture);
+        this.picture.next(picture);
+      });
   }
 
-  Comment(pictureId: number, comment : string) {
+  Comment(pictureId: number, comment: string) {
+    let formData: FormData = new FormData();
+    formData.append('message', comment);
 
-    let formData:FormData = new FormData();
-        formData.append('message', comment);
-
-    this.http.post(environment.apiUrl + `/caff/details/${pictureId}/comment`, formData)
-    .subscribe((response) => {
+    this.http
+      .post(environment.apiUrl + `/caff/details/${pictureId}/comment`, formData)
+      .pipe(take(1))
+      .subscribe((response) => {
         console.log(response);
         this.fetchPicture(pictureId);
       });
   }
 
-  RemoveComment(pictureId: number, commentId : number) {
-    this.http.delete(environment.apiUrl + `/caff/details/${pictureId}/comment/${commentId}`)
-    .subscribe((response) => {
+  RemoveComment(pictureId: number, commentId: number) {
+    this.http
+      .delete(
+        environment.apiUrl + `/caff/details/${pictureId}/comment/${commentId}`
+      )
+      .pipe(take(1))
+      .subscribe((response) => {
         console.log(response);
         this.fetchPicture(pictureId);
       });

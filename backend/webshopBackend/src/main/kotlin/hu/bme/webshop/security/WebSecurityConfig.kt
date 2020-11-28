@@ -55,8 +55,11 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
+			.authorizeRequests()
+				.antMatchers("/api/auth/**").permitAll()
 				.antMatchers("/h2-console/**").permitAll() //TODO: remove in prod
+				.antMatchers("/api/download/gif/**").permitAll()
+				.antMatchers("/api/download/thumbnail/**").permitAll()
 			.anyRequest().authenticated()
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
 	}

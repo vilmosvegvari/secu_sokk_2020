@@ -46,7 +46,6 @@ class DownloadController @Autowired constructor(
             value = ["/thumbnail/{id}"],
             produces = [MediaType.IMAGE_PNG_VALUE]
     )
-    @PreAuthorize("hasAnyRole('USER')")
     @ResponseBody
     fun downloadThumbnail(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = caffService.findById(id)
@@ -65,7 +64,6 @@ class DownloadController @Autowired constructor(
             value = ["/gif/{id}"],
             produces = [MediaType.IMAGE_GIF_VALUE]
     )
-    @PreAuthorize("hasAnyRole('USER')")
     @ResponseBody
     fun downloadGif(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = caffService.findById(id)

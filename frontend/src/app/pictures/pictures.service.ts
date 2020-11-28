@@ -1,14 +1,14 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 interface PictureMiniResponse {
-  id : number,
-  name: string,
-  filename: string,
-  filesize: number
+  id: number;
+  name: string;
+  filename: string;
+  filesize: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -33,8 +33,8 @@ export class PicturesService {
             };
           });
         }),
+        take(1),
         tap((pictures) => {
-          console.log(pictures);
           this.pictures.next(pictures);
         })
       )
@@ -43,42 +43,57 @@ export class PicturesService {
 
   deletePicture(pictureId) {
     return this.http
-          .delete<Number>(environment.apiUrl + `/caff/delete/${pictureId}`, { observe: 'response' })
-          .subscribe((response) => {
-            if(response.status === 200) {
-              this.pictures.value.splice(this.pictures.value.findIndex((el) => el.id === pictureId),1);
-            }
-          });
+      .delete<Number>(environment.apiUrl + `/caff/delete/${pictureId}`)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.fetchPictures();
+      });
   }
 
-   downloadCaff(pictureId) {   
-      this.http.get(environment.apiUrl + `/download/${pictureId}`, {responseType: 'blob'})
-      .subscribe(response => {
+  downloadCaff(pictureId) {
+    this.http
+      .get(environment.apiUrl + `/download/${pictureId}`, {
+        responseType: 'blob',
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(new Blob([response], {type: "caff"}));
-        link.download = "file.caff";
+        link.href = URL.createObjectURL(new Blob([response], { type: 'caff' }));
+        link.download = 'file.caff';
         link.click();
       });
-   }
+  }
 
-   downloadPNG(pictureId) {   
-    this.http.get(environment.apiUrl + `/download/thumbnail/${pictureId}`, {responseType: 'blob'})
-    .subscribe(response => {
-      console.log(response)
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(new Blob([response], {type: "image/png"}));
-      link.download = "file.png";
-      link.click();
-    });
- }
+  downloadPNG(pictureId) {
+    this.http
+      .get(environment.apiUrl + `/download/thumbnail/${pictureId}`, {
+        responseType: 'blob',
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        console.log(response);
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(
+          new Blob([response], { type: 'image/png' })
+        );
+        link.download = 'file.png';
+        link.click();
+      });
+  }
 
- downloadGIF(pictureId) {   
-  this.http.get(environment.apiUrl + `/download/gif/${pictureId}`, {responseType: 'blob'})
-  .subscribe(response => {
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(new Blob([response], {type: "image/gif"}));
-    link.download = "file.gif";
-    link.click();
-  });
-}
+  downloadGIF(pictureId) {
+    this.http
+      .get(environment.apiUrl + `/download/gif/${pictureId}`, {
+        responseType: 'blob',
+      })
+      .pipe(take(1))
+      .subscribe((response) => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(
+          new Blob([response], { type: 'image/gif' })
+        );
+        link.download = 'file.gif';
+        link.click();
+      });
+  }
 }

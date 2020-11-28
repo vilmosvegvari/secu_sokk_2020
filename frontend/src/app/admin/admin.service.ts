@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 interface UserResponse {
@@ -19,7 +19,6 @@ export class AdminService {
   constructor(private http: HttpClient) {}
 
   fetchUsers() {
-    console.log('fetching');
     return this.http
       .get<UserResponse[]>(environment.apiUrl + '/admin/list')
       .pipe(
@@ -34,9 +33,9 @@ export class AdminService {
           });
         }),
         tap((users) => {
-          console.log(users);
           this.users.next(users);
-        })
+        }),
+        take(1)
       )
       .subscribe();
   }
@@ -44,6 +43,7 @@ export class AdminService {
   deleteUser(userid) {
     return this.http
       .delete<Number>(environment.apiUrl + `/admin/delete/${userid}`)
+      .pipe(take(1))
       .subscribe((response) => {
         console.log(response); //now its "OK", we want userid
         let user = this.users.value.find((user) => user.id === response);
