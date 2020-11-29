@@ -50,14 +50,27 @@ export class PicturesService {
 
   onSearch(text) {
     if (text) {
-      let filteredPics = this.allPictures.filter(
-        (picture) =>
-          picture.name.toUpperCase().includes(text.toUpperCase()) ||
-          picture.tags.some((tag) => {
+      let filteredPics = this.allPictures.filter((picture) => {
+        let nameCheck = false;
+        let tagCheck = false;
+        let creatorCheck = false;
+
+        if (picture.name) {
+          nameCheck = picture.name.toUpperCase().includes(text.toUpperCase());
+        }
+        if (picture.tags) {
+          tagCheck = picture.tags.some((tag) => {
             return tag.name.toUpperCase().includes(text.toUpperCase());
-          }) ||
-          picture.creator.toUpperCase().includes(text.toUpperCase())
-      );
+          });
+        }
+        if (picture.creator) {
+          creatorCheck = picture.creator
+            .toUpperCase()
+            .includes(text.toUpperCase());
+        }
+
+        return nameCheck || tagCheck || creatorCheck;
+      });
 
       this.pictures.next(filteredPics);
       return;
