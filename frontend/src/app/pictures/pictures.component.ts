@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CoreEnvironment } from '@angular/compiler/src/compiler_facade_interface';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-pictures',
@@ -14,9 +15,12 @@ export class PicturesComponent implements OnInit, OnDestroy {
   pictures = [];
   pictureSub: Subscription;
   apiUrl: string;
+  user = null;
+
 
   constructor(
     private picturesService: PicturesService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -25,6 +29,7 @@ export class PicturesComponent implements OnInit, OnDestroy {
     this.pictureSub = this.picturesService.pictures.subscribe(
       (pictures) => (this.pictures = pictures)
     );
+    this.authService.user.subscribe(user => this.user = user);
     this.fetchPictures();
   }
 

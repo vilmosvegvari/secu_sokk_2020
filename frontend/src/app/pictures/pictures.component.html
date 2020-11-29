@@ -20,7 +20,7 @@
         Tags: <br /><small>{{ getTagNames(picture.tags) }}</small>
       </div>
 
-      <div class="">
+      <div class="" >
         <button
           type="button"
           class="btn btn-primary m-3"
@@ -30,10 +30,11 @@
         </button>
         <button
           type="button"
-          class="btn btn-danger m-3"
+          class="btn btn-danger m-3"    
+          *ngIf="user.isAdmin || user.username === picture.userName"      
           (click)="onDeletePicture(picture.id); $event.stopPropagation()"
         >
-          Delete
+          Delete 
         </button>
       </div>
     </div>
