@@ -25,10 +25,12 @@ class DbSeeder(
 			roleRepository.save(Role(ERole.ROLE_USER))
 		}
 
+
 		if (!userRepository.findByUsername("admin").isPresent) {
+			val pass = "$2a$10\$hjWWQgBuf23.TspkFf5OseL4IX6Dgap.JYpg2V0fJVBqbJPuqqfaS"
 			val user = User(
 				"admin",
-				encoder!!.encode("admin")
+				encoder!!.encode(pass)
 			)
 
 			val roles: MutableSet<Role> = HashSet()
