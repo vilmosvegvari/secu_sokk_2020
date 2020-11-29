@@ -1,0 +1,42 @@
+<h1 style="text-align: center">Pictures</h1>
+<div class="d-flex flex-wrap bg-light justify-content-between">
+  <div class="text-center" *ngFor="let picture of pictures; let i = index">
+    <div class="p-2 border" (click)="onOpenPicture(picture.id)">
+      <img
+        *ngIf="picture.status !== 'PROCESSING' && picture.status !== 'BAD_FILE'"
+        style="display: block; margin-left: auto; margin-right: auto"
+        src="{{ apiUrl }}{{ picture.thumbnailUrl }}"
+        width="300"
+        height="150"
+        class="img-thumbnail"
+      />
+      <app-loading-spinner
+        *ngIf="picture.status === 'PROCESSING'"
+      ></app-loading-spinner>
+      <h3 class="text-danger" *ngIf="picture.status == 'BAD_FILE'">Bad File</h3>
+      <h5>{{ picture.name }}</h5>
+      <div>{{ picture.creator }}</div>
+      <div>
+        Tags: <br /><small>{{ getTagNames(picture.tags) }}</small>
+      </div>
+
+      <div class="" >
+        <button
+          type="button"
+          class="btn btn-primary m-3"
+          (click)="onDownloadPicture(picture.id); $event.stopPropagation()"
+        >
+          Download
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger m-3"    
+          *ngIf="user.isAdmin || user.username === picture.userName"      
+          (click)="onDeletePicture(picture.id); $event.stopPropagation()"
+        >
+          Delete 
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

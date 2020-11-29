@@ -1,0 +1,68 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink="/pictures">Caff WebShop</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li
+        [routerLinkActive]="['active']"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a class="nav-link" routerLink="/pictures"
+          >Home <span class="sr-only"></span
+        ></a>
+      </li>
+      <li
+        [routerLinkActive]="['active']"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a
+          class="nav-link"
+          [ngClass]="{ disabled: !isAuthenticated }"
+          routerLink="/upload"
+          >Upload</a
+        >
+      </li>
+      <li
+        [routerLinkActive]="['active']"
+        [routerLinkActiveOptions]="{ exact: true }"
+        *ngIf="isAdmin"
+      >
+        <a class="nav-link" routerLink="/admin">Admin</a>
+      </li>
+    </ul>
+    <span class="navbar-nav">
+      <a
+        class="nav-link"
+        routerLink="/auth"
+        routerLinkActive="active"
+        (click)="onLogout()"
+      >
+        {{ isAuthenticated ? "Logout" : "Login" }}</a
+      >
+    </span>
+
+    <form class="form-inline my-2 my-lg-0" *ngIf="inPictures()">
+      <input
+        class="form-control mr-sm-2"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"
+        (input)="onSearchEvent($event.target.value)"
+      />
+      <button class="btn btn-outline-success my-2 my-sm-0" type="button">
+        Search
+      </button>
+    </form>
+  </div>
+</nav>

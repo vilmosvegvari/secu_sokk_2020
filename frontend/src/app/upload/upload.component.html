@@ -1,0 +1,41 @@
+<div class="m-5">
+  <div
+    class="alert alert-success text-center"
+    role="alert"
+    *ngIf="responseStatus"
+  >
+    <p>Successful upload! Your data is: {{ responseStatus }}</p>
+  </div>
+
+  <form #f (ngSubmit)="onClickUpload(f)" (reset)="onClickReset()">
+    <div>
+      <div class="custom-file">
+        <input
+          #fileInput
+          type="file"
+          class="custom-file-input"
+          id="inputGroupFile02"
+          accept=".caff"
+          (change)="fileChange($event)"
+        />
+        <label class="custom-file-label" for="inputGroupFile02" *ngIf="fileName"
+          >{{ fileName }}
+        </label>
+      </div>
+      <div class="text-center m-3">
+        <input
+          class="btn btn-success"
+          type="submit"
+          value="Submit"
+          [disabled]="!fileSelected"
+        />
+        <input
+          class="btn btn-danger"
+          type="reset"
+          value="Reset"
+          [disabled]="!fileSelected"
+        />
+      </div>
+    </div>
+  </form>
+</div>

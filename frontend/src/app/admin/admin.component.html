@@ -1,0 +1,30 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Username</th>
+      <th scope="col">UserID</th>
+      <th scope="col">Deleted</th>
+      <th scope="col">Admin</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users; let i = index">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>{{ user.username }}</td>
+      <td>{{ user.id }}</td>
+      <td>{{ user.isDeleted }}</td>
+      <td>{{ user.isAdmin }}</td>
+      <td>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="onDeleteUser(user.id)"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
