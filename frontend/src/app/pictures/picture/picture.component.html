@@ -1,33 +1,83 @@
 <div *ngIf="picture !== null">
+  <h1 style="text-align: center">{{ picture.name }}</h1>
+  <div
+    #mainFlex
+    class="d-flex flex-column flex-wrap bg-light justify-content-between"
+  >
+    <img
+      style="display: block; margin-left: auto; margin-right: auto"
+      src="{{ apiUrl }}{{ picture.gif }}"
+      width="450"
+      height="300"
+    />
 
-    <h1 style="text-align:center"> {{ picture.name }}</h1> 
-    <div #mainFlex class="d-flex flex-column flex-wrap bg-light justify-content-between ">
-        <img style="display: block; margin-left: auto; margin-right: auto;" src="{{apiUrl}}{{picture.gif}}" width=300 height = 450>
-        <div class="d-flex flex-wrap bg-light justify-content-center ">
-            <div *ngFor="let tag of picture.tags; let i = index">
-                <div class="p-2 border">{{tag}}</div>
-            </div>
+    <div class="text-center">
+      <div><strong> Creator:</strong></div>
+      <div>{{ picture.creator }}</div>
+      <div><strong> Number of Pictures:</strong></div>
+      <div>{{ picture.numAnim }}</div>
+      <div><strong> Caption:</strong></div>
+      <div>{{ picture.captions }}</div>
+      <div class="d-flex flex-wrap bg-light justify-content-center">
+        <div *ngFor="let tag of picture.tags; let i = index">
+          <div class="p-2 border">{{ tag }}</div>
         </div>
+      </div>
+      <button
+        type="button"
+        class="btn btn-danger m-3"
+        (click)="Delete(); commentIn.value = ''"
+        *ngIf="user.isAdmin || user.username === picture.userName"
+      >
+        Delete Picture
+      </button>
     </div>
-    <div class="input-group mb-3">
-        <input #commentIn [maxLength]="200" (input)="comment=$event.target.value" type="text" class="form-control" 
-        placeholder="Comment" aria-label="Comment" (keydown.enter)="onComment(); commentIn.value = ''"> 
-        <div class="input-group-append">
-            <button type="button" class="btn btn-primary" (click)="onComment(); commentIn.value = ''">Commnet</button>
-            <button type="button" class="btn btn-danger" (click)="Delete(); commentIn.value = ''" *ngIf="user.isAdmin || user.username === picture.userName">Delete</button>
+  </div>
+  <div class="input-group mb-3">
+    <input
+      #commentIn
+      [maxLength]="200"
+      (input)="comment = $event.target.value"
+      type="text"
+      class="form-control"
+      placeholder="Comment"
+      aria-label="Comment"
+      (keydown.enter)="onComment(); commentIn.value = ''"
+    />
+    <div class="input-group-append">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onComment(); commentIn.value = ''"
+      >
+        Add Comment
+      </button>
+    </div>
+  </div>
+  <div
+    class="d-flex flex-column-reverse flex-wrap bg-light justify-content-between"
+  >
+    <div
+      *ngFor="let comment of picture.comments; let i = index"
+      style="max-width: 100%"
+    >
+      <div class="p-2 border">
+        <div class="p-2">
+          {{ comment.userName }} - {{ comment.date }}
+          <button
+            class="btn btn-danger"
+            type="button"
+            style="float: right"
+            (click)="onRemoveComment(comment.id)"
+            *ngIf="user.username === comment.userName"
+          >
+            Delete
+          </button>
         </div>
-    </div>
-    <div class="d-flex flex-column-reverse flex-wrap bg-light justify-content-between ">
-        <div *ngFor="let comment of picture.comments; let i = index" style="max-width: 100%"> 
-            <div class="p-2 border" >
-                <div class="p-2">
-                    {{comment.userName}} - {{comment.date}}
-                    <input type="button" value="X" style="float: right;" (click)="onRemoveComment(comment.id)" *ngIf="user.username === comment.userName">
-                </div>
-                <div class="p-2"  style="word-wrap: break-word; text-align:left;">{{comment.message}}</div>    
-            </div>      
+        <div class="p-2" style="word-wrap: break-word; text-align: left">
+          {{ comment.message }}
         </div>
+      </div>
     </div>
+  </div>
 </div>
-
-

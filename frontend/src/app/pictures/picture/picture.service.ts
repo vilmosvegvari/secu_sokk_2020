@@ -49,8 +49,7 @@ export class PictureService {
     this.http
       .post(environment.apiUrl + `/caff/details/${pictureId}/comment`, formData)
       .pipe(take(1))
-      .subscribe((response) => {
-        console.log(response);
+      .subscribe(() => {
         this.fetchPicture(pictureId);
       });
   }
@@ -61,15 +60,17 @@ export class PictureService {
         environment.apiUrl + `/caff/details/${pictureId}/comment/${commentId}`
       )
       .pipe(take(1))
-      .subscribe((response) => {
-        console.log(response);
+      .subscribe(() => {
         this.fetchPicture(pictureId);
       });
   }
 
   Delete(pictureId: Number) {
     return this.http
-          .delete<Number>(environment.apiUrl + `/caff/delete/${pictureId}`, { observe: 'response' })
-          .subscribe();
+      .delete<Number>(environment.apiUrl + `/caff/delete/${pictureId}`, {
+        observe: 'response',
+      })
+      .pipe(take(1))
+      .subscribe();
   }
 }

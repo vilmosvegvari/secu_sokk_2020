@@ -51,6 +51,10 @@ export class PicturesComponent implements OnInit, OnDestroy {
   }
 
   onOpenPicture(pictureId) {
+    let picture = this.pictures.find((p) => p.id === pictureId);
+    if (picture.status === 'BAD_FILE') {
+      return;
+    }
     this.router.navigate(['/pictures', pictureId]);
   }
 }

@@ -3,7 +3,7 @@
   <div class="text-center" *ngFor="let picture of pictures; let i = index">
     <div class="p-2 border" (click)="onOpenPicture(picture.id)">
       <img
-        *ngIf="picture.status !== 'PROCESSING'"
+        *ngIf="picture.status !== 'PROCESSING' && picture.status !== 'BAD_FILE'"
         style="display: block; margin-left: auto; margin-right: auto"
         src="{{ apiUrl }}{{ picture.thumbnailUrl }}"
         width="300"
@@ -13,6 +13,7 @@
       <app-loading-spinner
         *ngIf="picture.status === 'PROCESSING'"
       ></app-loading-spinner>
+      <h3 class="text-danger" *ngIf="picture.status == 'BAD_FILE'">Bad File</h3>
       <h5>{{ picture.name }}</h5>
       <div>{{ picture.creator }}</div>
       <div>
