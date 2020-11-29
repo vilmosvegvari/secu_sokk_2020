@@ -56,8 +56,7 @@ export class PicturesService {
           picture.tags.some((tag) => {
             return tag.name.toUpperCase().includes(text.toUpperCase());
           }) ||
-          picture.creator.toUpperCase().includes(text.toUpperCase()) ||
-          picture.id.toString().includes(text)
+          picture.creator.toUpperCase().includes(text.toUpperCase())
       );
 
       this.pictures.next(filteredPics);
