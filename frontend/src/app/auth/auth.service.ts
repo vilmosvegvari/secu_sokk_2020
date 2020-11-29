@@ -20,16 +20,14 @@ export interface AuthDataResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   user = new BehaviorSubject<User>(null);
-  private salt;
+  private salt = '$2a$10$hjWWQgBuf23.TspkFf5Ose';
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   signup(username: string, password: string) {
-    if (!this.salt) {
-      this.salt = bcrypt.genSaltSync(10);
-    }
     var hash = bcrypt.hashSync(password, this.salt);
+
     return this.http
       .post<AuthDataResponse>(environment.apiUrl + '/auth/signup', {
         username: username,
@@ -50,9 +48,6 @@ export class AuthService {
   }
 
   autoLogin() {
-    if (!this.salt) {
-      this.salt = bcrypt.genSaltSync(10);
-    }
     const userData: {
       username: string;
       id: string;
@@ -81,9 +76,6 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    if (!this.salt) {
-      this.salt = bcrypt.genSaltSync(10);
-    }
     var hash = bcrypt.hashSync(password, this.salt);
     return this.http
       .post<AuthDataResponse>(environment.apiUrl + '/auth/login', {
