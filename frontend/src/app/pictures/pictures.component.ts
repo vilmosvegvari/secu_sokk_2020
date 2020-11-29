@@ -14,9 +14,9 @@ import { AuthService } from '../auth/auth.service';
 export class PicturesComponent implements OnInit, OnDestroy {
   pictures = [];
   pictureSub: Subscription;
+  userSub: Subscription;
   apiUrl: string;
   user = null;
-
 
   constructor(
     private picturesService: PicturesService,
@@ -29,12 +29,15 @@ export class PicturesComponent implements OnInit, OnDestroy {
     this.pictureSub = this.picturesService.pictures.subscribe(
       (pictures) => (this.pictures = pictures)
     );
-    this.authService.user.subscribe(user => this.user = user);
+    this.userSub = this.authService.user.subscribe(
+      (user) => (this.user = user)
+    );
     this.fetchPictures();
   }
 
   ngOnDestroy(): void {
     this.pictureSub.unsubscribe();
+    this.userSub.unsubscribe();
   }
 
   getTagNames(array) {
