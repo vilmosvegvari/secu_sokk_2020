@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { BehaviorSubject } from 'rxjs';
 import { tap, timeout } from 'rxjs/operators';
+import * as bcrypt from 'bcryptjs';
+
 import { environment } from 'src/environments/environment';
 import { User } from './user.model';
 
@@ -19,15 +20,20 @@ export interface AuthDataResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   user = new BehaviorSubject<User>(null);
+  private salt;
   private tokenExpirationTimer: any;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   signup(username: string, password: string) {
+    if (!this.salt) {
+      this.salt = bcrypt.genSaltSync(10);
+    }
+    var hash = bcrypt.hashSync(password, this.salt);
     return this.http
       .post<AuthDataResponse>(environment.apiUrl + '/auth/signup', {
         username: username,
-        password: password,
+        password: hash,
       })
       .pipe(
         timeout(10000),
@@ -44,6 +50,9 @@ export class AuthService {
   }
 
   autoLogin() {
+    if (!this.salt) {
+      this.salt = bcrypt.genSaltSync(10);
+    }
     const userData: {
       username: string;
       id: string;
@@ -72,10 +81,14 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
+    if (!this.salt) {
+      this.salt = bcrypt.genSaltSync(10);
+    }
+    var hash = bcrypt.hashSync(password, this.salt);
     return this.http
       .post<AuthDataResponse>(environment.apiUrl + '/auth/login', {
         username: username,
-        password: password,
+        password: hash,
       })
       .pipe(
         timeout(10000),
