@@ -39,4 +39,14 @@ class Caff(
 	get(){
 		return "/download/thumbnail/$id"
 	}
+
+	val userName: String
+	get(){
+		return user.username
+	}
+
+	val userId: String
+	get() {
+		return "${user.id}"
+	}
 }
