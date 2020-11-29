@@ -69,7 +69,7 @@
             type="button"
             style="float: right"
             (click)="onRemoveComment(comment.id)"
-            *ngIf="user.username === comment.userName"
+            *ngIf="user.isAdmin || user.username === comment.userName"
           >
             Delete
           </button>
