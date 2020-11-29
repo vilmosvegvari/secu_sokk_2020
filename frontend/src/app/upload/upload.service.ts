@@ -4,6 +4,10 @@ import { Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+interface UploadAnswer {
+  status: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UploadService {
   constructor(private http: HttpClient) {}
@@ -12,11 +16,9 @@ export class UploadService {
     let formData: FormData = new FormData();
     formData.append('file', file, file.name);
 
-    this.http
-      .put(environment.apiUrl + '/upload', formData)
-      .pipe(take(1))
-      .subscribe((response) => {
-        console.log(response);
-      });
+    return this.http.put<UploadAnswer>(
+      environment.apiUrl + '/upload',
+      formData
+    );
   }
 }
