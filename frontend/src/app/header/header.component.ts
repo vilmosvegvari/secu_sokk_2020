@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
+import { PictureService } from '../pictures/picture/picture.service';
+import { PicturesService } from '../pictures/pictures.service';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +16,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isAdmin = false;
   private userSub: Subscription;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private picturesService: PicturesService
+  ) {}
 
   ngOnInit(): void {
     this.userSub = this.authService.user.subscribe((user) => {
@@ -30,6 +36,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   inPictures() {
     return this.router.url === '/pictures';
+  }
+
+  onSearchEvent(text) {
+    this.picturesService.onSearch(text);
   }
 
   onLogout() {
