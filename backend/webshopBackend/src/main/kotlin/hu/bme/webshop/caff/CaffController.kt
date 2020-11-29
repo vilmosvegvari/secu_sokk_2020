@@ -87,11 +87,18 @@ class CaffController(val caffService: CaffService, val userService: UserDetailsP
     }
 
     @DeleteMapping("/details/{caffId}/comment/{commentId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun deleteComment(@PathVariable(value = "caffId") caffId: Long, @PathVariable(value = "commentId") commentId: Long): ResponseEntity<Any> {
-        val user = userService.getUser()
+        val result: Boolean
+        val currentUser = userService.getUser()
 
-        return if (caffService.deleteCommentIfSameUser(caffId, commentId, user)) {
+        result = if (currentUser.getRoles().any { it.getName() == ERole.ROLE_ADMIN }) {
+            caffService.deleteComment(caffId, commentId)
+        } else {
+            caffService.deleteCommentIfSameUser(caffId, commentId, currentUser)
+        }
+
+        return if (result) {
             ResponseEntity.ok(mapOf("message" to "ok"))
         } else {
             ResponseEntity.notFound().build<Any>()

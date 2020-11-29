@@ -55,6 +55,17 @@ class CaffService(
         return false
     }
 
+    fun deleteComment(caffId: Long, commentId: Long): Boolean {
+        if (commentRepository.existsById(commentId)) {
+            val comment = commentRepository.findById(commentId).get()
+            if (comment.caff.id == caffId){
+                commentRepository.delete(comment)
+                return true
+            }
+        }
+        return false
+    }
+
     fun deleteIfSameUser(caffId: Long, user: User): Boolean {
         if (caffRepository.existsById(caffId) && caffRepository.findById(caffId).get().user == user) {
             caffRepository.deleteById(caffId)
