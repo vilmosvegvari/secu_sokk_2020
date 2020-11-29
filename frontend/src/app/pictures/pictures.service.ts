@@ -34,13 +34,11 @@ export class PicturesService {
   constructor(private http: HttpClient) {}
 
   fetchPictures() {
-    console.log('fetching');
     return this.http
       .get<PictureMiniResponse[]>(environment.apiUrl + '/caff/all')
       .pipe(
         take(1),
         tap((pictures) => {
-          console.log(pictures);
           this.allPictures = pictures;
           this.pictures.next(this.allPictures);
         })
@@ -108,7 +106,6 @@ export class PicturesService {
       })
       .pipe(take(1))
       .subscribe((response) => {
-        console.log(response);
         const link = document.createElement('a');
         link.href = URL.createObjectURL(
           new Blob([response], { type: 'image/png' })

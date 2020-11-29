@@ -37,7 +37,6 @@ export class PictureService {
       )
       .pipe(take(1))
       .subscribe((picture) => {
-        console.log(picture);
         this.picture.next(picture);
       });
   }

@@ -45,7 +45,6 @@ export class AuthComponent {
         this.router.navigate(['/pictures']);
       },
       (errorMessage) => {
-        console.log(errorMessage);
         if (errorMessage.name === 'TimeoutError') {
           this.error = errorMessage.message;
         } else if (errorMessage.error.statusText) {

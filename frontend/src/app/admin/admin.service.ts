@@ -45,9 +45,7 @@ export class AdminService {
       .delete<Number>(environment.apiUrl + `/admin/delete/${userid}`)
       .pipe(take(1))
       .subscribe((response) => {
-        console.log(response); //now its "OK", we want userid
-        let user = this.users.value.find((user) => user.id === response);
-        user.isDeleted = true;
+        this.fetchUsers();
       });
   }
 }
