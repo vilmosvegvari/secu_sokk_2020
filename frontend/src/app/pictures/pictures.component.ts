@@ -32,6 +32,12 @@ export class PicturesComponent implements OnInit, OnDestroy {
     this.pictureSub.unsubscribe();
   }
 
+  getTagNames(array) {
+    return array.map((tag) => {
+      return tag.name;
+    });
+  }
+
   fetchPictures(): void {
     this.picturesService.fetchPictures();
   }

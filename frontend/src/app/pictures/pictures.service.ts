@@ -9,11 +9,26 @@ interface PictureMiniResponse {
   name: string;
   filename: string;
   filesize: number;
-  thumbnailUrl: string
+  thumbnailUrl: string;
+  comments: Comment[];
+  tags: Tag[];
+  captions: [];
+  creator: string;
+  gif: string;
+  numAnim: number;
+}
+
+interface Tag {
+  id: number;
+  name: string;
+  type: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class PicturesService {
+  //this contains all pictures every time.
+  allPictures: PictureMiniResponse[] = [];
+  //this is what we show -> we can filter this at searching
   pictures = new BehaviorSubject<PictureMiniResponse[]>(null);
 
   constructor(private http: HttpClient) {}
@@ -22,13 +37,33 @@ export class PicturesService {
     console.log('fetching');
     return this.http
       .get<PictureMiniResponse[]>(environment.apiUrl + '/caff/all')
-      .pipe(      
+      .pipe(
         take(1),
         tap((pictures) => {
-          this.pictures.next(pictures);
+          console.log(pictures);
+          this.allPictures = pictures;
+          this.pictures.next(this.allPictures);
         })
       )
       .subscribe();
+  }
+
+  onSearch(text) {
+    if (text) {
+      let filteredPics = this.allPictures.filter(
+        (picture) =>
+          picture.name.toUpperCase().includes(text.toUpperCase()) ||
+          picture.tags.some((tag) => {
+            return tag.name.toUpperCase().includes(text.toUpperCase());
+          }) ||
+          picture.creator.toUpperCase().includes(text.toUpperCase()) ||
+          picture.id.toString().includes(text)
+      );
+
+      this.pictures.next(filteredPics);
+      return;
+    }
+    this.pictures.next(this.allPictures);
   }
 
   deletePicture(pictureId) {

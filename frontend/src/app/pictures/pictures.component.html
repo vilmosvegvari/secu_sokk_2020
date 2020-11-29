@@ -1,12 +1,40 @@
-<h1 style="text-align:center">Pictures</h1> 
-<div class="d-flex flex-wrap bg-light justify-content-between ">
-  <div *ngFor="let picture of pictures; let i = index">
-    <div class="p-2 border">
-      <img style="display: block; margin-left: auto; margin-right: auto;" src="{{apiUrl}}{{picture.thumbnailUrl}}" width=100 height = 150>
-      <div style="text-align:center"> {{ picture.name }}</div> 
-      <button type="button" class="btn btn-danger" (click)="onDeletePicture(picture.id)">X</button>
-      <button type="button" class="btn btn-primary" (click)="onDownloadPicture(picture.id)">D</button>
-      <button type="button" class="btn btn-info" (click)="onOpenPicture(picture.id)">...</button>      
+<h1 style="text-align: center">Pictures</h1>
+<div class="d-flex flex-wrap bg-light justify-content-between">
+  <div class="text-center" *ngFor="let picture of pictures; let i = index">
+    <div class="p-2 border" (click)="onOpenPicture(picture.id)">
+      <img
+        *ngIf="picture.status !== 'PROCESSING'"
+        style="display: block; margin-left: auto; margin-right: auto"
+        src="{{ apiUrl }}{{ picture.thumbnailUrl }}"
+        width="300"
+        height="150"
+        class="img-thumbnail"
+      />
+      <app-loading-spinner
+        *ngIf="picture.status === 'PROCESSING'"
+      ></app-loading-spinner>
+      <h5>{{ picture.name }}</h5>
+      <div>{{ picture.creator }}</div>
+      <div>
+        Tags: <br /><small>{{ getTagNames(picture.tags) }}</small>
+      </div>
+
+      <div class="">
+        <button
+          type="button"
+          class="btn btn-primary m-3"
+          (click)="onDownloadPicture(picture.id); $event.stopPropagation()"
+        >
+          Download
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger m-3"
+          (click)="onDeletePicture(picture.id); $event.stopPropagation()"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   </div>
 </div>
