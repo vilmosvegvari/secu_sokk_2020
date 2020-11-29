@@ -42,7 +42,7 @@ class CaffController(val caffService: CaffService, val userService: UserDetailsP
     }
 
     @GetMapping("/details/{id}")
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun details(@PathVariable(value = "id") id: Long): ResponseEntity<Any> {
         val caff = caffService.findById(id) ?: return ResponseEntity.notFound().build<Any>()
 
@@ -65,7 +65,7 @@ class CaffController(val caffService: CaffService, val userService: UserDetailsP
             download = "/download/${caff.id}"
             numAnim = caff.numAnim
             filesize = caff.filesize
-            userName = userService.getUser().username
+            userName = caff.userName
             this.tags = tags
             this.captions = captions
             this.comments = caff.comments
@@ -75,7 +75,7 @@ class CaffController(val caffService: CaffService, val userService: UserDetailsP
     }
 
     @PostMapping("/details/{id}/comment")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun storeComment(@PathVariable(value = "id") id: Long, @RequestParam("message") message: String): ResponseEntity<Any> {
         val user = userService.getUser()
 

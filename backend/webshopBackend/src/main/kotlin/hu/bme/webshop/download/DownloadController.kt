@@ -26,7 +26,7 @@ class DownloadController @Autowired constructor(
             value = ["/{id}"],
             produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE]
     )
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @ResponseBody
     fun downloadCaff(@PathVariable(value = "id") id: Long, response: HttpServletResponse): ByteArray? {
         val caff = caffService.findById(id)

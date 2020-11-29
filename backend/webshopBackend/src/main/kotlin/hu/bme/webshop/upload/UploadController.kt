@@ -24,7 +24,7 @@ class UploadController @Autowired constructor(
 ) {
 
     @PutMapping("")
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     fun handleFileUpload(@RequestParam("file") file: MultipartFile): ResponseEntity<*> {
         //Store the file and get stored name
         val filesize = file.size
