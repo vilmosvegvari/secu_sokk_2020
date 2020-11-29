@@ -16,7 +16,7 @@ class CaffService(
 
     fun findAll(): MutableIterable<Caff> {
         //logger.info("UserId ${userService.getUser().id} get all users")
-        return caffRepository.findAllByStatus(ECaffStatus.OK)
+        return caffRepository.findAll()
     }
 
     fun findById(caffId: Long): Caff? {
